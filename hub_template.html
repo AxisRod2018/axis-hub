@@ -1,0 +1,2277 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Axis Intelligence Hub</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800;900&family=Barlow:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap');
+:root{--black:#0a0a0a;--dark:#111;--card:#181818;--card2:#1e1e1e;--border:#252525;
+--teal:#00c2a8;--teal-dim:rgba(0,194,168,0.1);--red:#ff4444;--red-dim:rgba(255,68,68,0.1);
+--amber:#f5a623;--amber-dim:rgba(245,166,35,0.1);--green:#4caf7d;--green-dim:rgba(76,175,125,0.1);
+--purple:#9b6dff;--purple-dim:rgba(155,109,255,0.1);--text:#f0f0f0;--muted:#555;--mid:#888;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--black);color:var(--text);font-family:'Barlow',sans-serif;min-height:100vh;}
+.nav{display:flex;align-items:center;gap:16px;padding:12px 20px;border-bottom:1px solid var(--border);background:var(--dark);position:sticky;top:0;z-index:100;flex-wrap:wrap;}
+.logo{font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;}
+.logo span{color:var(--teal);}
+.tab{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:5px 12px;border-radius:4px;cursor:pointer;border:1px solid transparent;color:var(--muted);background:none;transition:all .2s;}
+.tab.active{color:var(--teal);border-color:var(--teal);background:var(--teal-dim);}
+.tab:hover{color:var(--text);}
+.content{padding:18px;max-width:1080px;margin:0 auto;}
+.panel{display:none;}.panel.active{display:block;}
+.sec{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);padding:8px 0 6px;border-bottom:1px solid var(--border);margin:18px 0 10px;}
+.card{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:16px;margin-bottom:12px;}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;}
+.stat{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:14px;text-align:center;}
+.sn{font-family:'Barlow Condensed',sans-serif;font-size:24px;font-weight:800;line-height:1;}
+.sl{font-size:9px;color:var(--mid);text-transform:uppercase;letter-spacing:.05em;margin-top:3px;}
+.c-r{color:var(--red);}.c-a{color:var(--amber);}.c-g{color:var(--green);}.c-t{color:var(--teal);}.c-p{color:var(--purple);}
+.btn{font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:8px 18px;background:var(--teal);color:#000;border:none;border-radius:4px;cursor:pointer;transition:all .2s;}
+.btn:hover{background:#00e0c2;}
+.btn:disabled{opacity:.5;cursor:not-allowed;}
+.btn.ghost{background:none;border:1px solid var(--border);color:var(--mid);}
+.pill{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;padding:3px 9px;border-radius:10px;white-space:nowrap;}
+.p-g{background:var(--green-dim);color:var(--green);}
+.p-r{background:var(--red-dim);color:var(--red);}
+.p-a{background:var(--amber-dim);color:var(--amber);}
+.p-t{background:var(--teal-dim);color:var(--teal);}
+.p-p{background:var(--purple-dim);color:var(--purple);}
+.ai-out{font-size:13px;line-height:1.75;color:var(--text);white-space:pre-wrap;}
+.idle{color:var(--muted);font-style:italic;font-size:13px;}
+.flag{display:flex;align-items:flex-start;gap:12px;padding:12px 0;border-bottom:1px solid var(--border);}
+.flag:last-child{border-bottom:none;}
+.flag-ic{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;}
+.flag-t{font-size:13px;font-weight:500;}
+.flag-d{font-size:11px;color:var(--mid);margin-top:2px;line-height:1.5;}
+.resolve{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;padding:4px 12px;border-radius:4px;border:1px solid var(--border);background:none;color:var(--mid);cursor:pointer;text-transform:uppercase;letter-spacing:.05em;}
+.resolve:hover{border-color:var(--green);color:var(--green);}
+.resolve.done{border-color:var(--green);color:var(--green);background:var(--green-dim);}
+.league-row{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);font-size:12px;cursor:pointer;}
+.league-row:hover{background:var(--card2);margin:0 -8px;padding-left:8px;padding-right:8px;border-radius:4px;}
+.league-row:last-child{border-bottom:none;}
+.lg-bar{flex:1;height:6px;background:var(--border);border-radius:3px;overflow:hidden;}
+.lg-fill{height:100%;border-radius:3px;}
+.av{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:800;flex-shrink:0;}
+.av-g{background:var(--green-dim);color:var(--green);}
+.av-r{background:var(--red-dim);color:var(--red);}
+.av-a{background:var(--amber-dim);color:var(--amber);}
+.av-t{background:var(--teal-dim);color:var(--teal);}
+.roster{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:10px;}
+.rcard{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px;cursor:pointer;transition:all .15s;}
+.rcard:hover{border-color:var(--teal);transform:translateY(-2px);}
+.rname{font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:800;text-transform:uppercase;}
+.rsub{font-size:11px;color:var(--mid);margin-top:2px;line-height:1.5;}
+.sub-tabs{display:flex;gap:6px;margin:14px 0;flex-wrap:wrap;}
+.stab{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:6px 16px;border-radius:16px;border:1px solid var(--border);background:none;color:var(--muted);cursor:pointer;}
+.stab.active{color:var(--teal);border-color:var(--teal);background:var(--teal-dim);}
+.sv{display:none;}.sv.active{display:block;}
+.comp-banner{border-radius:8px;padding:14px 16px;margin-bottom:14px;display:flex;align-items:center;gap:14px;}
+.comp-full{background:var(--green-dim);border:1px solid rgba(76,175,125,.3);}
+.comp-low{background:var(--red-dim);border:1px solid rgba(255,68,68,.3);}
+.comp-mid{background:var(--amber-dim);border:1px solid rgba(245,166,35,.3);}
+.comp-score{font-family:'Barlow Condensed',sans-serif;font-size:30px;font-weight:900;line-height:1;}
+.locked{background:var(--card2);border:1px dashed var(--border);border-radius:8px;padding:16px;margin-bottom:10px;text-align:center;}
+.locked-t{font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:800;text-transform:uppercase;color:var(--muted);margin-bottom:4px;}
+.locked-d{font-size:11px;color:var(--muted);line-height:1.5;}
+.goal-card{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:16px;margin-bottom:10px;}
+.goal-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:8px;flex-wrap:wrap;}
+.goal-t{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:800;text-transform:uppercase;}
+.goal-meta{font-size:11px;color:var(--mid);display:flex;gap:14px;flex-wrap:wrap;}
+.gbar{height:6px;background:var(--border);border-radius:3px;overflow:hidden;margin:8px 0 4px;}
+.gfill{height:100%;border-radius:3px;}
+.ms{display:flex;align-items:center;gap:8px;font-size:11px;color:var(--mid);margin-top:5px;}
+.ms-dot{width:12px;height:12px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:7px;flex-shrink:0;}
+.bsg{background:linear-gradient(135deg,#0d2420,#111);border:1px solid rgba(0,194,168,.3);border-radius:10px;padding:18px;margin-bottom:14px;}
+textarea{width:100%;min-height:150px;background:var(--card2);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:'Barlow',sans-serif;font-size:12px;padding:12px;resize:vertical;}
+textarea:focus{outline:none;border-color:var(--teal);}
+.day-tabs{display:flex;gap:4px;flex-wrap:wrap;margin:12px 0;}
+.dtab{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;padding:4px 10px;border-radius:4px;border:1px solid var(--border);color:var(--muted);cursor:pointer;background:none;text-transform:uppercase;}
+.dtab.training{border-color:rgba(0,194,168,.4);}
+.dtab.active{color:var(--teal);border-color:var(--teal);background:var(--teal-dim);}
+.meal{background:var(--card2);border-radius:6px;padding:12px;margin-bottom:8px;}
+.meal-h{display:flex;justify-content:space-between;font-size:12px;font-weight:600;margin-bottom:4px;}
+.meal-h span:last-child{color:var(--muted);font-weight:400;font-size:11px;}
+.meal-i{font-size:12px;color:var(--mid);line-height:1.55;}
+.meal-n{font-size:11px;color:var(--teal);font-style:italic;margin-top:4px;}
+.macros{display:flex;gap:6px;margin-top:6px;flex-wrap:wrap;}
+.mp{font-family:'Barlow Condensed',sans-serif;font-size:9px;font-weight:700;padding:2px 7px;border-radius:8px;background:var(--teal-dim);color:var(--teal);}
+.info-r{display:flex;justify-content:space-between;font-size:12px;margin-bottom:5px;}
+.info-r span:first-child{color:var(--mid);}
+.tst-row{display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid var(--border);font-size:12px;}
+.tst-row:last-child{border-bottom:none;}
+.tst-name{flex:1;color:var(--mid);}
+.tst-val{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:14px;width:70px;text-align:right;}
+.tst-prev{color:var(--muted);font-size:11px;width:90px;text-align:right;}
+.tst-pb{width:60px;text-align:right;}
+.back{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);background:none;border:1px solid var(--border);border-radius:4px;padding:5px 12px;cursor:pointer;margin-bottom:14px;}
+.back:hover{color:var(--text);}
+.ath-hero{display:flex;align-items:center;gap:16px;margin-bottom:4px;flex-wrap:wrap;}
+.ath-hero .av{width:52px;height:52px;font-size:16px;}
+.hname{font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:900;text-transform:uppercase;line-height:1;}
+.hsub{font-size:12px;color:var(--mid);margin-top:4px;}
+.tl-strip{display:flex;gap:2px;margin:10px 0;}
+.tl-p{flex:1;padding:5px 4px;border-radius:3px;text-align:center;}
+.tl-p .l{font-family:'Barlow Condensed',sans-serif;font-size:9px;font-weight:700;text-transform:uppercase;}
+.tl-p .w{font-size:9px;color:var(--muted);margin-top:1px;}
+.tl-done{background:var(--green-dim);}.tl-done .l{color:var(--green);}
+.tl-act{background:var(--teal-dim);}.tl-act .l{color:var(--teal);}
+.tl-fut{background:var(--card2);}.tl-fut .l{color:var(--muted);}
+.pr-row{display:flex;align-items:center;gap:10px;padding:8px 10px;background:var(--card2);border-radius:6px;margin:8px 0;font-size:11px;color:var(--mid);}
+.pb-bg{flex:1;height:5px;background:var(--border);border-radius:3px;overflow:hidden;}
+.pb{height:100%;border-radius:3px;}
+.crit-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:8px 0;}
+.crit-domain{background:var(--card2);border-radius:6px;padding:10px;}
+.cd-l{font-family:'Barlow Condensed',sans-serif;font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:7px;}
+.ci{display:flex;align-items:flex-start;gap:6px;margin-bottom:5px;}
+.ci:last-child{margin-bottom:0;}
+.ck{width:13px;height:13px;border-radius:2px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:8px;margin-top:1px;}
+.ck-y{background:var(--green-dim);color:var(--green);}
+.ck-n{background:var(--red-dim);color:var(--red);}
+.ck-p{background:var(--amber-dim);color:var(--amber);}
+.ct{font-size:11px;color:var(--mid);flex:1;line-height:1.35;}
+.cv{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;flex-shrink:0;}
+.nxt{background:var(--card2);border-left:3px solid var(--purple);border-radius:6px;padding:10px 12px;margin-top:8px;}
+.nxt-l{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--purple);margin-bottom:5px;}
+.nxt-t{font-size:12px;color:var(--mid);line-height:1.6;}
+/* APPROVALS */
+.appr-filters{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap;}
+.afilt{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:5px 14px;border-radius:16px;border:1px solid var(--border);background:none;color:var(--muted);cursor:pointer;}
+.afilt.active{color:var(--teal);border-color:var(--teal);background:var(--teal-dim);}
+.q-card{background:var(--card);border:1px solid var(--border);border-radius:10px;margin-bottom:10px;overflow:hidden;}
+.q-card.approved{opacity:.6;border-color:rgba(76,175,125,.3);}
+.q-head{display:flex;align-items:center;gap:12px;padding:14px 16px;cursor:pointer;}
+.q-head:hover{background:var(--card2);}
+.q-kind{font-family:'Barlow Condensed',sans-serif;font-size:9px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;padding:3px 8px;border-radius:4px;flex-shrink:0;}
+.qk-brief{background:var(--teal-dim);color:var(--teal);}
+.qk-clinical{background:var(--green-dim);color:var(--green);}
+.qk-referral{background:var(--purple-dim);color:var(--purple);}
+.q-title{flex:1;}
+.q-name{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:800;text-transform:uppercase;}
+.q-meta{font-size:11px;color:var(--mid);margin-top:1px;}
+.q-owner{font-size:11px;color:var(--muted);white-space:nowrap;}
+.q-chev{color:var(--muted);font-size:12px;transition:transform .2s;}
+.q-card.open .q-chev{transform:rotate(90deg);}
+.q-body{display:none;padding:0 16px 16px;border-top:1px solid var(--border);}
+.q-card.open .q-body{display:block;}
+.q-draftlabel{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:12px 0 6px;display:flex;justify-content:space-between;align-items:center;}
+.q-edit{width:100%;min-height:220px;background:var(--card2);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:'Barlow',sans-serif;font-size:13px;line-height:1.7;padding:14px;resize:vertical;}
+.q-edit:focus{outline:none;border-color:var(--teal);}
+.q-edit.edited{border-color:var(--amber);}
+.q-actions{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;align-items:center;}
+.q-deliver{font-size:11px;color:var(--muted);margin-left:auto;}
+.q-approved-stamp{background:var(--green-dim);border:1px solid rgba(76,175,125,.3);border-radius:6px;padding:10px 14px;margin-top:10px;font-size:12px;color:var(--green);display:flex;align-items:center;gap:8px;}
+.audit-row{display:flex;align-items:flex-start;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);font-size:12px;}
+.audit-row:last-child{border-bottom:none;}
+.audit-ic{width:22px;height:22px;border-radius:50%;background:var(--green-dim);color:var(--green);display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0;}
+.audit-txt{flex:1;color:var(--mid);line-height:1.4;}
+.audit-txt strong{color:var(--text);font-weight:500;}
+.audit-time{font-size:10px;color:var(--muted);white-space:nowrap;}
+@media(max-width:700px){.grid2,.grid4,.crit-grid{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+
+<div class="nav">
+  <div class="logo">AXIS <span>Intelligence Hub</span></div>
+  <button class="tab active" id="nav-home" onclick="go('home')">Home</button>
+  <button class="tab" id="nav-athletes" onclick="go('athletes')">Athletes</button>
+  <button class="tab" id="nav-referrals" onclick="go('referrals')">Referral Engine</button>
+  <button class="tab" id="nav-approvals" onclick="go('approvals')">Approvals <span id="appr-badge" style="background:var(--purple);color:#fff;font-size:9px;font-weight:800;padding:1px 6px;border-radius:8px;margin-left:2px;">0</span></button>
+  <div style="margin-left:auto;font-size:11px;color:var(--muted);">Mon 2 Jun 2025 · Rod</div>
+</div>
+
+<div class="content">
+
+<!-- ═══════════ HOME — FACILITY COMMAND CENTRE ═══════════ -->
+<div class="panel active" id="p-home">
+  <div class="card" style="border-left:3px solid var(--teal);margin-bottom:14px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
+    <div style="font-size:12px;color:var(--mid);"><strong style="color:var(--teal);">● LIVE</strong> — Lumin aufb-413645 + VALD Axis Performance · synced __SYNCED__ · signed in as <strong style="color:var(--teal);">__USER__</strong> <a href="/logout" style="color:var(--muted);font-size:11px;">(sign out)</a> <button class="btn ghost" style="font-size:10px;padding:3px 10px;margin-left:6px;" onclick="syncNow(this)">↻ Sync now</button></div>
+  </div>
+
+  <!-- FACILITY WEEK BANNER -->
+  <div class="card" id="wk-banner" style="border-left:3px solid var(--teal);margin-bottom:16px;padding:20px 22px;"></div>
+
+  <!-- LIVE STATS -->
+  <div class="grid4" style="margin-bottom:16px;" id="live-stats"></div>
+
+  <!-- ATTENTION GRID -->
+  <div class="sec">Needs attention — computed live, click a name to open the profile</div>
+  <div class="grid2" id="attention" style="margin-bottom:16px;"></div>
+
+  <!-- COMPLETENESS LEAGUE -->
+  <div class="sec">📊 Data completeness league</div>
+  <div class="card" id="live-league"></div>
+</div>
+
+<!-- ═══════════ ATHLETES ROSTER ═══════════ -->
+<div class="panel" id="p-athletes">
+  <div class="sec">Athlete Roster — live from Lumin · click to open full profile</div>
+  <div id="roster-bar" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;"></div>
+  <div class="roster" id="roster"></div>
+</div>
+
+<!-- ═══════════ REFERRAL ENGINE ═══════════ -->
+<div class="panel" id="p-referrals">
+  <div class="grid4" style="margin-bottom:16px;grid-template-columns:repeat(3,1fr);">
+    <div class="stat" style="border-top:2px solid var(--red);"><div class="sn c-r" id="rf-physio">0</div><div class="sl">Physio referrals</div></div>
+    <div class="stat" style="border-top:2px solid var(--purple);"><div class="sn c-p" id="rf-psych">0</div><div class="sl">Sports psych protocol</div></div>
+    <div class="stat" style="border-top:2px solid var(--amber);"><div class="sn c-a" id="rf-stall">0</div><div class="sl">Rehab stalls</div></div>
+  </div>
+  <div class="card" style="border-left:3px solid var(--teal);">
+    <div style="font-size:12px;color:var(--mid);line-height:1.65;"><strong style="color:var(--text);">Referral engine.</strong> Triggered by live data against the Axis referral ruleset: high severity injuries, ACL or rehab past 26 weeks (automatic psych check in), and phases stalled 12 weeks or more. Generate a draft, edit it, send it yourself. Nothing sends automatically.</div>
+  </div>
+  <div id="referrals-live"></div>
+</div>
+
+<div class="panel" id="p-approvals">
+  <div class="grid4" style="margin-bottom:16px;grid-template-columns:repeat(4,1fr);">
+    <div class="stat" style="border-top:2px solid var(--teal);"><div class="sn c-t" id="ap-pending">0</div><div class="sl">Pending briefs</div></div>
+    <div class="stat" style="border-top:2px solid var(--red);"><div class="sn c-r" id="ap-held">0</div><div class="sl">Held</div></div>
+    <div class="stat" style="border-top:2px solid var(--green);"><div class="sn c-g" id="ap-approved">0</div><div class="sl">Approved</div></div>
+    <div class="stat" style="border-top:2px solid var(--purple);"><div class="sn c-p" id="ap-rehab">0</div><div class="sl">Rehab progressions</div></div>
+  </div>
+
+  <div class="card" style="border-left:3px solid var(--teal);">
+    <div style="font-size:12px;color:var(--mid);line-height:1.65;"><strong style="color:var(--text);">The Monday cockpit.</strong> Every weekly brief generates automatically at 2am Monday and lands here before it reaches an athlete. Read it, edit inline, then Approve and Send, or Approve but Hold if it should not go out yet. Nothing reaches an athlete without a coach's name on it.</div>
+  </div>
+
+  <div class="appr-filters">
+    <button class="afilt active" onclick="apFilter('pending',this)">Pending</button>
+    <button class="afilt" onclick="apFilter('held',this)">Held</button>
+    <button class="afilt" onclick="apFilter('approved',this)">Approved</button>
+    <button class="afilt" onclick="apFilter('all',this)">All</button>
+  </div>
+
+  <div class="sec">📬 Weekly reviews — generated Mondays 2am, pending coach approval</div>
+  <div id="ap-reviews"></div>
+  <div id="ap-queue" style="display:none;"></div>
+
+  <div class="sec">Audit Log — this week</div>
+  <div class="card"><div id="ap-audit"><div style="font-size:12px;color:var(--muted);padding:6px 0;">Nothing approved yet. Approved items appear here with approver, timestamp, and whether the draft was edited.</div></div></div>
+</div>
+
+<!-- ═══════════ ATHLETE PROFILE ═══════════ -->
+<div class="panel" id="p-profile">
+  <button class="back" onclick="go('athletes')">← All athletes</button>
+  <div class="ath-hero">
+    <div class="av" id="pf-av">PA</div>
+    <div>
+      <div class="hname" id="pf-name">—</div>
+      <div class="hsub" id="pf-sub">AFL Forward · ADP · Coach: Ben R.</div>
+    </div>
+    <div style="margin-left:auto;" id="pf-comp"></div>
+  </div>
+
+  <div class="sub-tabs">
+    <button class="stab active" onclick="pfTab('overview',this)">Overview</button>
+    <button class="stab" id="stab-rehab" onclick="pfTab('rehab',this)">🏥 Rehab</button>
+    <button class="stab" onclick="pfTab('weekly',this)">Weekly Review</button>
+    <button class="stab" onclick="pfTab('testing',this)">Testing</button>
+    <button class="stab" onclick="pfTab('meals',this)">Meal Plan</button>
+    <button class="stab" onclick="pfTab('goals',this)">Goals</button>
+  </div>
+
+  <div class="sv active" id="pf-overview"></div>
+  <div class="sv" id="pf-rehab"></div>
+  <div class="sv" id="pf-weekly"></div>
+  <div class="sv" id="pf-testing"></div>
+  <div class="sv" id="pf-meals"></div>
+  <div class="sv" id="pf-goals"></div>
+</div>
+
+</div>
+
+<script>
+// ═══════════ ATHLETE DATA ═══════════
+const ATHLETES = {};
+
+// ═══════════ NAV ═══════════
+let currentAthlete = null;
+function go(p){
+  document.querySelectorAll('.nav .tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(x=>x.classList.remove('active'));
+  const nav = document.getElementById('nav-'+p);
+  if(nav) nav.classList.add('active');
+  if(p==='athletes') buildRoster();
+  if(p==='approvals') setTimeout(renderReviewQueue,0);
+  if(p==='referrals') setTimeout(renderReferrals,0);
+  if(p==='approvals') renderQueue();
+  document.getElementById('p-'+p).classList.add('active');
+}
+function res(btn){
+  btn.classList.toggle('done');
+  btn.textContent = btn.classList.contains('done') ? '✓ Resolved' : 'Resolve';
+  document.getElementById('flag-count').textContent = document.querySelectorAll('.resolve:not(.done)').length;
+}
+// ═══════════ PRP PROGRESSION APPROVAL + AUDIT TRAIL ═══════════
+// Seeded history so the trail demonstrates the record from day one
+let PRP_AUDIT = __PRP_AUDIT__;
+function prpHistory(id){
+  const rows = PRP_AUDIT.filter(e=>e.athlete===id);
+  if(!rows.length) return '<div style="font-size:12px;color:var(--muted);padding:6px 0;">No progressions recorded yet.</div>';
+  return rows.map((e,idx)=>`
+    <div class="audit-row" style="${e.kind==='override'?'border-left:3px solid var(--red);padding-left:10px;':''}">
+      <div class="audit-ic" style="${e.kind==='override'?'background:var(--red-dim);color:var(--red);':''}">${e.kind==='override'?'⚠':'✓'}</div>
+      <div class="audit-txt">
+        <strong>Phase ${e.from} → ${e.to} (${e.phaseName})</strong> ${e.kind==='override'?'<span class="pill p-r">CLINICAL OVERRIDE</span>':''} — ${e.approver}
+        <div style="font-size:11px;color:var(--muted);margin-top:2px;">${e.note}</div>
+        <a style="font-size:11px;color:var(--teal);cursor:pointer;" onclick="const s=this.nextElementSibling;s.style.display=s.style.display==='none'?'block':'none';">criteria snapshot ▾</a>
+        <div style="display:none;margin-top:6px;background:var(--card);border:1px solid var(--border);border-radius:6px;padding:8px;">
+          ${e.snapshot.map(c=>`<div style="display:flex;gap:8px;font-size:11px;padding:2px 0;"><span class="${c[0]==='y'?'c-g':'c-r'}" style="width:12px;">${c[0]==='y'?'✓':'✗'}</span><span style="flex:1;color:var(--mid);">${c[1]}</span><span class="${c[0]==='y'?'c-g':'c-r'}">${c[2]}</span></div>`).join('')}
+        </div>
+      </div>
+      <div class="audit-time">${e.at}</div>
+    </div>`).join('');
+}
+function snapshotOf(p){
+  const out=[]; p.domains.forEach(d=>d.items.forEach(i=>out.push([i[0],d.label+': '+i[1],i[2]])));
+  return out;
+}
+function openProgression(id, mode){
+  const a=ATHLETES[id], p=a.prp;
+  const snap=snapshotOf(p);
+  const unmet=snap.filter(c=>c[0]!=='y');
+  const box=document.getElementById('prg-box');
+  box.style.display='block';
+  box.innerHTML = `
+    <div class="card" style="border-left:3px solid ${mode==='override'?'var(--red)':'var(--teal)'};">
+      <div style="font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:800;text-transform:uppercase;margin-bottom:8px;">
+        ${mode==='override'?'⚠ Clinical override — Phase '+p.phase+' → '+(p.phase+1):'Approve progression — Phase '+p.phase+' → '+(p.phase+1)}
+      </div>
+      ${mode==='override'?`<div style="font-size:12px;color:var(--red);background:var(--red-dim);border-radius:6px;padding:8px 10px;margin-bottom:10px;line-height:1.6;">${unmet.length} criteria unmet. Criteria-based progression is the Axis standard — an override is a documented clinical exception, it is flagged permanently in the audit trail, and the unmet criteria are named in the record. If you are not certain, do not override.</div>`:''}
+      <div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;font-family:'Barlow Condensed',sans-serif;font-weight:700;margin-bottom:6px;">Criteria snapshot — frozen into the record at approval</div>
+      <div style="background:var(--card);border:1px solid var(--border);border-radius:6px;padding:10px;margin-bottom:10px;max-height:180px;overflow:auto;">
+        ${snap.map(c=>`<div style="display:flex;gap:8px;font-size:12px;padding:3px 0;"><span class="${c[0]==='y'?'c-g':'c-r'}" style="width:14px;">${c[0]==='y'?'✓':'✗'}</span><span style="flex:1;color:var(--mid);">${c[1]}</span><span class="${c[0]==='y'?'c-g':'c-r'}">${c[2]}</span></div>`).join('')}
+      </div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:10px;">
+        <div style="flex:1;min-width:200px;">
+          <div style="font-size:11px;color:var(--muted);margin-bottom:4px;">Approver</div>
+          <select id="prg-approver" style="width:100%;background:var(--card);border:1px solid var(--border);border-radius:6px;padding:8px;color:var(--text);font-size:13px;">
+            <option>${CURRENT_USER}${IS_PHYSIO?' (Physio)':' — not authorised for clinical approvals'}</option>
+          </select>
+          <div style="font-size:10px;color:var(--muted);margin-top:4px;">Clinical progressions are physio-only. Coaches cannot approve phase changes.</div>
+        </div>
+      </div>
+      <div style="font-size:11px;color:var(--muted);margin-bottom:4px;">${mode==='override'?'Clinical rationale — REQUIRED. Name why progression proceeds despite unmet criteria.':'Clinical note (optional)'}</div>
+      <textarea id="prg-note" style="width:100%;min-height:60px;background:var(--card);border:1px solid var(--border);border-radius:6px;padding:8px;color:var(--text);font-size:12px;box-sizing:border-box;" placeholder="${mode==='override'?'e.g. Isokinetic testing unavailable this block; clinical assessment of quad function satisfactory; retest scheduled within 14 days...':'e.g. Phase 4 entry battery booked Thursday...'}"></textarea>
+      <label style="display:flex;gap:8px;align-items:flex-start;font-size:12px;color:var(--mid);margin:10px 0;cursor:pointer;">
+        <input type="checkbox" id="prg-confirm" style="margin-top:2px;">
+        <span>I confirm the criteria snapshot above is accurate and I clinically clear ${a.name.split(' ')[0]} to enter Phase ${p.phase+1}.${mode==='override'?' I take clinical responsibility for progressing with unmet criteria.':''}</span>
+      </label>
+      <div style="display:flex;gap:8px;">
+        <button class="btn" style="${mode==='override'?'background:var(--red);':''}" onclick="confirmProgression('${id}','${mode}')">${mode==='override'?'⚠ Record override & progress':'✓ Approve & progress'}</button>
+        <button class="btn ghost" onclick="document.getElementById('prg-box').style.display='none'">Cancel</button>
+      </div>
+      <div id="prg-err" style="font-size:12px;color:var(--red);margin-top:8px;"></div>
+    </div>`;
+  if(box.scrollIntoView) box.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+const NEXT_PHASE = {
+  4:{name:'Return to Training', statusText:'In progress — Phase 5 criteria pending', domains:[
+    {label:'Outcome / Testing',items:[['n','100% LSI Quads + HS','Pending'],['n','95% Quad / HS / Hop','Pending'],['n','Isokinetic testing booked','Pending']]},
+    {label:'Running / COD',items:[['n','Unplanned COD blocks','Not started'],['n','Progressive speed exposure','Not started'],['n','Full conditioning volume','Not started']]},
+    {label:'Skills / Contact',items:[['n','Modified team training','Not started'],['n','Full team training','Not started'],['n','Contact protocols complete','Not started']]}
+  ], next:{label:'Phase 5 gate', text:'Exit criteria: 100% LSI, 95% quads/HS/hop, full unrestricted team training with contact. Criteria-based, never time-based.'}},
+  3:{name:'Max Strength & Return to Run', statusText:'In progress — Phase 4 criteria pending', domains:[
+    {label:'Outcome / Testing',items:[['n','90% LSI Quads + HS','Pending'],['n','Jump testing >90% LSI','Pending'],['n','COD mechanics appropriate','Pending']]},
+    {label:'Running / COD',items:[['n','Linear running cleared','Not started'],['n','COD 1-4','Not started'],['n','Game simulation','Not started']]}
+  ], next:{label:'Phase 4 gate', text:'Exit criteria: 90% LSI quads + HS, jump testing >90%, COD mechanics appropriate.'}}
+};
+async function confirmProgression(id, mode){
+  const note=document.getElementById('prg-note').value.trim();
+  const ok=document.getElementById('prg-confirm').checked;
+  const err=document.getElementById('prg-err');
+  if(!ok){ err.textContent='Tick the clinical confirmation to proceed.'; return; }
+  if(mode==='override' && note.length<30){ err.textContent='Override requires a documented clinical rationale (be specific — this goes on the permanent record).'; return; }
+  const a=ATHLETES[id], p=a.prp;
+  const snap=snapshotOf(p);
+  const unmet=snap.filter(c=>c[0]!=='y').map(c=>c[1]);
+  const now=new Date();
+  const at=now.toLocaleDateString('en-AU',{day:'numeric',month:'short',year:'numeric'})+', '+now.toLocaleTimeString('en-AU',{hour:'numeric',minute:'2-digit'});
+  const entry={athlete:id, name:a.name, from:p.phase, to:p.phase+1,
+    phaseName:(NEXT_PHASE[p.phase+1]||{}).name||('Phase '+(p.phase+1)),
+    approver:CURRENT_USER+' (Physio)', at, kind:mode==='override'?'override':'approval',
+    note: mode==='override' ? note+' [UNMET AT OVERRIDE: '+unmet.join('; ')+']' : (note||'All criteria met at snapshot.'),
+    snapshot:snap};
+  try{ await persistApproval(entry); }catch(e){ err.textContent=e.message; return; }
+  PRP_AUDIT.push(entry);
+  auditLog.unshift({name:a.name, kind:(mode==='override'?'⚠ Rehab OVERRIDE':'Rehab progression'), owner:entry.approver, at, edited:false, deliver:'Phase '+entry.from+' → '+entry.to+' ('+entry.phaseName+')'});
+  // Advance the phase in the UI
+  const np=NEXT_PHASE[p.phase+1];
+  p.phase=p.phase+1;
+  if(np){ p.phaseName=np.name; p.statusText=np.statusText; p.domains=np.domains; p.next=np.next; }
+  p.status='progress';
+  p.criteriaMet=0; p.criteriaTotal=p.domains.reduce((s,d)=>s+d.items.length,0);
+  p.timeline.forEach(t=>{ if(t.s==='act'){t.s='done'; t.d=t.d.replace('· complete','✓').replace(/$/,t.d.includes('✓')?'':' ✓');} });
+  const nxt=p.timeline.find(t=>t.s==='fut'); if(nxt){ nxt.s='act'; }
+  renderRehab(a, id);
+}
+
+
+// ═══════════ REHAB EXIT CRITERIA — manual, per phase ═══════════
+let REHAB_CRITERIA = __REHAB_CRITERIA__;
+function critItems(id,phase){ const c=REHAB_CRITERIA[id]; if(!c||!c.byPhase) return []; return c.byPhase[phase]||[]; }
+function critSave(id,phase,items){
+  const c=REHAB_CRITERIA[id]||{byPhase:{}};
+  c.byPhase=c.byPhase||{}; c.byPhase[phase]=items; c.items=items; c.phase=phase;
+  REHAB_CRITERIA[id]=c;
+  try{ fetch('/api/criteria/'+encodeURIComponent(id),{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(c)}).catch(()=>{}); }catch(e){}
+}
+function addCrit(id,phase){
+  const t=document.getElementById('crit-t').value.trim(), v=document.getElementById('crit-v').value.trim();
+  if(!t) return;
+  const items=critItems(id,phase).slice(); items.push({t:t,v:v,met:null});
+  critSave(id,phase,items); renderRehabLive(ATHLETES[id],id);
+}
+function setCrit(id,phase,i,val){
+  const items=critItems(id,phase).slice();
+  items[i]=Object.assign({},items[i],{met:items[i].met===val?null:val});
+  critSave(id,phase,items); renderRehabLive(ATHLETES[id],id);
+}
+function editCritVal(id,phase,i,val){
+  const items=critItems(id,phase).slice();
+  items[i]=Object.assign({},items[i],{v:val}); critSave(id,phase,items);
+}
+function delCrit(id,phase,i){
+  const items=critItems(id,phase).slice(); items.splice(i,1);
+  critSave(id,phase,items); renderRehabLive(ATHLETES[id],id);
+}
+function critCard(id,phase){
+  const items=critItems(id,phase);
+  const met=items.filter(c=>c.met===true).length;
+  const pct=items.length?Math.round(100*met/items.length):0;
+  const col=items.length&&met===items.length?'var(--green)':pct>=60?'var(--amber)':'var(--red)';
+  const rows=items.map((c,i)=>`
+    <div style="display:flex;gap:8px;align-items:center;padding:6px 0;border-top:1px solid var(--border);">
+      <span style="flex:1;font-size:13px;color:${c.met===true?'var(--green)':c.met===false?'var(--red)':'var(--text)'};">${c.t}</span>
+      <input value="${(c.v||'').replace(/"/g,'&quot;')}" placeholder="value" onchange="editCritVal('${id}','${phase}',${i},this.value)" style="width:88px;background:var(--card);border:1px solid var(--border);border-radius:6px;padding:5px 7px;color:var(--text);font-size:11px;">
+      <button class="resolve" style="${c.met===true?'background:var(--green-dim);color:var(--green);border-color:var(--green);':''}" onclick="setCrit('${id}','${phase}',${i},true)">✓</button>
+      <button class="resolve" style="${c.met===false?'background:var(--red-dim);color:var(--red);border-color:var(--red);':''}" onclick="setCrit('${id}','${phase}',${i},false)">✗</button>
+      <button class="resolve" onclick="delCrit('${id}','${phase}',${i})">×</button>
+    </div>`).join('');
+  return `<div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px;margin-bottom:6px;">
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:800;text-transform:uppercase;">Exit criteria — ${phase}</div>
+        ${items.length?`<span style="font-family:'Barlow Condensed',sans-serif;font-weight:700;color:${col};">${met} / ${items.length} met</span>`:''}
+      </div>
+      ${items.length?`<div class="pb-bg" style="margin-bottom:4px;"><div class="pb" style="width:${pct}%;background:${col}"></div></div>`:''}
+      ${rows||'<div style="font-size:12px;color:var(--muted);padding:6px 0;">No criteria set for this phase. Add what this athlete must hit to progress. Values can be read off the VALD panel on the Testing tab.</div>'}
+      <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;">
+        <input id="crit-t" placeholder="e.g. Quad LSI above 90%" style="flex:1;min-width:170px;background:var(--card);border:1px solid var(--border);border-radius:6px;padding:8px 10px;color:var(--text);font-size:12px;" onkeydown="if(event.key==='Enter')addCrit('${id}','${phase}')">
+        <input id="crit-v" placeholder="value" style="width:88px;background:var(--card);border:1px solid var(--border);border-radius:6px;padding:8px 10px;color:var(--text);font-size:12px;">
+        <button class="btn ghost" onclick="addCrit('${id}','${phase}')">+ Add criterion</button>
+      </div>
+    </div>`;
+}
+
+// ═══════════ LIVE REHAB TAB — real Axis 6-phase model from Lumin ═══════════
+const AXIS_PHASES = ['Prehab','Protection','Load Introduction','Load Accumulation','Return to Train','Return to Play'];
+
+
+function fullTimeline(id, currentPhase){
+  const c=REHAB_CRITERIA[id];
+  if(!c||!c.byPhase) return '';
+  const phases=AXIS_PHASES.filter(p=>(c.byPhase[p]||[]).length);
+  if(!phases.length) return '';
+  const rows=phases.map(ph=>{
+    const items=c.byPhase[ph]||[];
+    const met=items.filter(x=>x.met===true).length;
+    const pct=items.length?Math.round(100*met/items.length):0;
+    const complete=items.length&&met===items.length;
+    const isCur=ph===currentPhase;
+    const col=complete?'var(--green)':pct>=50?'var(--amber)':'var(--red)';
+    const dot=complete?'✓':isCur?'●':'○';
+    return `<div style="display:flex;gap:10px;align-items:flex-start;padding:8px 0;${isCur?'':''}">
+      <div style="width:20px;text-align:center;color:${complete?'var(--green)':isCur?'var(--teal)':'var(--muted)'};font-size:15px;font-weight:700;flex-shrink:0;">${dot}</div>
+      <div style="flex:1;min-width:0;">
+        <div style="display:flex;justify-content:space-between;gap:8px;align-items:center;flex-wrap:wrap;">
+          <span style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:13px;text-transform:uppercase;letter-spacing:.03em;color:${isCur?'var(--teal)':'var(--text)'};">${ph}${isCur?' · current':''}</span>
+          <span style="font-size:11px;font-weight:700;color:${col};">${met}/${items.length}</span>
+        </div>
+        <div class="pb-bg" style="margin-top:5px;height:5px;"><div class="pb" style="width:${pct}%;background:${col};height:5px;"></div></div>
+      </div>
+    </div>`;
+  }).join('');
+  return `<div class="card">
+    <div class="sec" style="margin-top:0;">Rehab timeline — criteria progress by phase</div>
+    ${rows}
+    <div style="font-size:10.5px;color:var(--muted);margin-top:8px;line-height:1.5;">Each phase advances when its criteria are met. This is the whole journey at a glance. Tick criteria off in the phase cards below.</div>
+  </div>`;
+}
+
+// ═══════════ REHAB CRITERIA TEMPLATES — predetermined protocols ═══════════
+// Each template maps Axis phases to their exit criteria. Applying one loads the
+// criteria for every phase at once, so the physio ticks them off rather than
+// typing them. Criteria default to unmet. Values are targets, editable per athlete.
+const REHAB_TEMPLATES = {
+  acl: {
+    label: "ACL Reconstruction",
+    note: "Hamstring or patellar graft. Criteria based, not time based. Progression at each phase requires all criteria met or a documented clinical override.",
+    byPhase: {
+      "Protection": [
+        {t:"Full passive knee extension (0°)", v:"0°"},
+        {t:"Knee flexion to 90°", v:"90°"},
+        {t:"Effusion controlled (stroke test ≤1+)", v:"≤1+"},
+        {t:"Quad activation, straight leg raise no lag", v:"No lag"},
+        {t:"Normal gait without aids", v:"Pass"}
+      ],
+      "Load Introduction": [
+        {t:"Full ROM both directions", v:"Full"},
+        {t:"Quad LSI on isometric", v:"≥70%"},
+        {t:"Single leg balance 30s eyes open", v:"30s"},
+        {t:"Bilateral squat to 60° pain free", v:"Pass"},
+        {t:"Effusion stable after load", v:"Nil"}
+      ],
+      "Load Accumulation": [
+        {t:"Quad LSI", v:"≥80%"},
+        {t:"Hamstring LSI", v:"≥80%"},
+        {t:"Single leg squat control", v:"Good"},
+        {t:"Bilateral hop tolerance", v:"Pass"},
+        {t:"Leg press LSI", v:"≥80%"}
+      ],
+      "Return to Train": [
+        {t:"Quad LSI", v:"≥90%"},
+        {t:"Hamstring LSI", v:"≥90%"},
+        {t:"Single leg hop LSI", v:"≥90%"},
+        {t:"Triple hop LSI", v:"≥90%"},
+        {t:"Linear running cleared", v:"Done"},
+        {t:"COD mechanics appropriate", v:"Pass"}
+      ],
+      "Return to Play": [
+        {t:"Quad LSI", v:"≥95%"},
+        {t:"Hamstring LSI", v:"≥95%"},
+        {t:"All hop tests LSI", v:"≥95%"},
+        {t:"5-10-5 agility to benchmark", v:"Benchmark"},
+        {t:"Full contact training tolerated", v:"Pass"},
+        {t:"Psychological readiness (ACL-RSI)", v:"Pass"}
+      ]
+    }
+  },
+  hamstring: {
+    label: "Hamstring Strain",
+    note: "Graded hamstring strain. Nordic and isometric strength drive progression.",
+    byPhase: {
+      "Protection": [
+        {t:"Pain free walking", v:"Pass"},
+        {t:"Isometric contraction pain free at inner range", v:"Pass"},
+        {t:"No pain on palpation", v:"Nil"}
+      ],
+      "Load Introduction": [
+        {t:"Full ROM vs other side", v:"Full"},
+        {t:"Isometric strength LSI", v:"≥80%"},
+        {t:"Pain free jogging", v:"Pass"}
+      ],
+      "Load Accumulation": [
+        {t:"Nordic LSI", v:"≥85%"},
+        {t:"Prone iso LSI", v:"≥85%"},
+        {t:"Pain free striding 70%", v:"Pass"}
+      ],
+      "Return to Train": [
+        {t:"Nordic LSI", v:"≥90%"},
+        {t:"Max speed running exposure", v:"Done"},
+        {t:"Repeat sprint tolerance", v:"Pass"}
+      ],
+      "Return to Play": [
+        {t:"Nordic LSI", v:"≥95%"},
+        {t:"Full speed no apprehension", v:"Pass"},
+        {t:"Full training block completed", v:"Pass"}
+      ]
+    }
+  },
+  ankle: {
+    label: "Ankle Sprain (Lateral)",
+    note: "Lateral ligament sprain. Balance, stiffness and hop symmetry drive progression.",
+    byPhase: {
+      "Protection": [
+        {t:"Weight bearing pain free", v:"Pass"},
+        {t:"Swelling controlled", v:"Nil"},
+        {t:"Dorsiflexion ROM restored", v:"Full"}
+      ],
+      "Load Introduction": [
+        {t:"Single leg balance 30s", v:"30s"},
+        {t:"Calf raise LSI", v:"≥80%"},
+        {t:"Pain free jogging", v:"Pass"}
+      ],
+      "Load Accumulation": [
+        {t:"Hop for distance LSI", v:"≥85%"},
+        {t:"Lateral hop tolerance", v:"Pass"},
+        {t:"Calf raise LSI", v:"≥90%"}
+      ],
+      "Return to Train": [
+        {t:"Single leg hop LSI", v:"≥90%"},
+        {t:"COD cleared", v:"Pass"},
+        {t:"Multidirectional running", v:"Done"}
+      ],
+      "Return to Play": [
+        {t:"All hop LSI", v:"≥95%"},
+        {t:"Full agility to benchmark", v:"Benchmark"},
+        {t:"Full training tolerated", v:"Pass"}
+      ]
+    }
+  }
+};
+
+function applyTemplate(id, key){
+  const tpl=REHAB_TEMPLATES[key];
+  if(!tpl) return;
+  const existing=(REHAB_CRITERIA[id]&&REHAB_CRITERIA[id].byPhase)?Object.keys(REHAB_CRITERIA[id].byPhase).filter(ph=>(REHAB_CRITERIA[id].byPhase[ph]||[]).length).length:0;
+  if(existing && !confirm(`This will load the ${tpl.label} criteria into every phase. Criteria you have already set will be kept and the template added alongside. Continue?`)) return;
+  const c=REHAB_CRITERIA[id]||{byPhase:{}};
+  c.byPhase=c.byPhase||{};
+  c.template=key;
+  Object.entries(tpl.byPhase).forEach(([ph,items])=>{
+    const cur=c.byPhase[ph]||[];
+    const curNames=new Set(cur.map(x=>x.t));
+    items.forEach(it=>{ if(!curNames.has(it.t)) cur.push({t:it.t, v:it.v, met:null}); });
+    c.byPhase[ph]=cur;
+  });
+  const a=ATHLETES[id], phase=(a.prpLive&&a.prpLive.phaseName)||'Baseline';
+  c.items=c.byPhase[phase]||[]; c.phase=phase;
+  REHAB_CRITERIA[id]=c;
+  try{ fetch('/api/criteria/'+encodeURIComponent(id),{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(c)}).catch(()=>{}); }catch(e){}
+  renderRehabLive(a, id);
+}
+function templatePicker(id){
+  const cur=(REHAB_CRITERIA[id]||{}).template;
+  return `<div class="card" style="border-left:3px solid var(--teal);">
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;">
+      <div style="font-size:12px;color:var(--mid);"><strong style="color:var(--text);">Rehab protocol template.</strong> Load a predetermined criteria set across all phases, then tick off and adjust per athlete.</div>
+      <select onchange="if(this.value)applyTemplate('${id}',this.value);this.selectedIndex=0;" style="background:var(--card);border:1px solid var(--border);border-radius:8px;padding:8px 12px;color:var(--text);font-size:13px;min-width:190px;">
+        <option value="">${cur?'Loaded: '+(REHAB_TEMPLATES[cur]||{}).label+' — reapply or add':'Select a protocol...'}</option>
+        ${Object.entries(REHAB_TEMPLATES).map(([k,t])=>`<option value="${k}">${t.label}</option>`).join('')}
+      </select>
+    </div>
+    ${cur&&REHAB_TEMPLATES[cur]?`<div style="font-size:11px;color:var(--muted);margin-top:8px;line-height:1.6;">${REHAB_TEMPLATES[cur].note}</div>`:''}
+  </div>`;
+}
+
+function renderRehabLive(a, id){
+  const p=a.prpLive;
+  if(p && p.noPlan){
+    const inj=(a.flags||[]).filter(f=>f.kind==='injury');
+    document.getElementById('pf-rehab').innerHTML=`
+      <div class="card" style="border-left:3px solid var(--muted);">
+        <div style="font-size:12px;color:var(--mid);line-height:1.7;"><strong style="color:var(--text);">No active rehab plan in Lumin.</strong> ${a.name.split(' ')[0]} is a PRP athlete but has no rehab plan attached yet. When Luke starts a plan in Lumin it flows through here with the full phase structure. Until then you can still set exit criteria and record clinical notes below.</div>
+      </div>
+      ${inj.length?`<div class="card"><div class="sec" style="margin-top:0;">Injury items in Lumin</div>${inj.map(f=>`<div class="info-r"><span>${f.name}${f.side?' ('+f.side+')':''}</span><span class="c-r">severity ${f.severity??'?'} · ${f.date||''}</span></div>`).join('')}</div>`:'<div class="card"><div style="font-size:12px;color:var(--muted);">No injury items linked in Lumin.</div></div>'}
+      ${templatePicker(id)}
+      ${fullTimeline(id, null)}
+      ${(()=>{
+        const c=REHAB_CRITERIA[id];
+        const firstPhase = (c&&c.byPhase)?AXIS_PHASES.find(p=>(c.byPhase[p]||[]).length) : null;
+        return critCard(id, firstPhase||'Baseline');
+      })()}
+      <div class="card" style="border-left:3px solid var(--teal);">
+        <div style="font-size:11px;color:var(--mid);line-height:1.6;"><strong style="color:var(--teal);">Testing:</strong> this athlete's VALD and Lumin results are on the Testing tab. Once a rehab plan is active, criteria here can be checked against those numbers.</div>
+      </div>`;
+    return;
+  }
+  const doneNames=(p.history||[]).map(x=>x.n);
+  const curIdx=AXIS_PHASES.indexOf(p.phaseName);
+  const strip=AXIS_PHASES.map((n,i)=>{
+    const hist=(p.history||[]).find(x=>x.n===n);
+    const s=n===p.phaseName?'act':hist?'done':'fut';
+    const d=hist?new Date(hist.date).toLocaleDateString('en-AU',{day:'numeric',month:'short',year:'2-digit'}):'—';
+    return `<div class="tl-p tl-${s}"><div class="l">${n.length>16?n.replace('Introduction','Intro').replace('Accumulation','Accum'):n}</div><div class="w">${d}</div></div>`;
+  }).join('');
+  const inj=(a.flags||[]).filter(f=>f.kind==='injury');
+  const injHtml=inj.length?inj.map(f=>`<div class="info-r"><span>${f.name}${f.side?' ('+f.side+')':''}</span><span class="c-r">severity ${f.severity??'?'} · ${f.date||''}</span></div>`).join(''):'<div class="info-r"><span>No active injury item linked in Lumin</span><span>—</span></div>';
+  // Psych protocol: ACL or 26+ weeks triggers check-in per Axis referral ruleset
+  const isACL=inj.some(f=>/acl/i.test(f.name));
+  const longRehab=(p.weeksTotal||0)>=26;
+  const psych=(isACL||longRehab)?`
+    <div class="card" style="border-left:3px solid var(--amber);">
+      <div style="font-size:12px;color:var(--mid);line-height:1.7;"><strong style="color:var(--amber);">🧠 Psych check-in protocol active</strong> — ${isACL?'ACL injury':''}${isACL&&longRehab?' and ':''}${longRehab?`rehab duration ${p.weeksTotal} weeks (6-month+ threshold)`:''}. Per the Axis referral ruleset this athlete gets an automatic sports psych check-in. Generate the referral from the Referral Engine.</div>
+    </div>`:'';
+  const stallFlag=(p.weeksInPhase||0)>=12 && p.phaseName!=='Return to Play' ? `
+    <div class="card" style="border-left:3px solid var(--red);">
+      <div style="font-size:12px;color:var(--mid);line-height:1.7;"><strong style="color:var(--red);">⚠ Phase stall</strong> — ${p.weeksInPhase} weeks in ${p.phaseName}. Criteria-based progression is the Axis USP; a phase running this long needs a documented reason or a progression decision. Review with the physio.</div>
+    </div>`:'';
+  document.getElementById('pf-rehab').innerHTML = `
+    <div class="card">
+      <div class="grid2">
+        <div>
+          <div class="cd-l" style="margin-bottom:8px;">Active injuries — live from Lumin</div>
+          ${injHtml}
+          <div class="info-r"><span>Rehab started</span><span>${p.started?new Date(p.started).toLocaleDateString('en-AU',{day:'numeric',month:'short',year:'numeric'}):'?'}</span></div>
+        </div>
+        <div>
+          <div class="cd-l" style="margin-bottom:8px;">Phase status</div>
+          <div style="font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:800;text-transform:uppercase;line-height:1.2;">${p.phaseName}</div>
+          <div style="font-size:12px;color:var(--mid);margin-top:6px;">Week <strong style="color:var(--teal);">${p.weeksInPhase??'?'}</strong> of this phase · Week <strong style="color:var(--teal);">${p.weeksTotal??'?'}</strong> of rehab overall</div>
+          <div style="font-size:11px;color:var(--muted);margin-top:4px;">Entered ${p.phaseEntered?new Date(p.phaseEntered).toLocaleDateString('en-AU',{day:'numeric',month:'short',year:'numeric'}):'?'}</div>
+        </div>
+      </div>
+    </div>
+    <div class="tl-strip">${strip}</div>
+    ${psych}
+    ${stallFlag}
+    ${templatePicker(id)}
+    ${fullTimeline(id, p.phaseName)}
+    ${critCard(id, p.phaseName)}
+    ${curIdx<AXIS_PHASES.length-1?(()=>{
+      const its=critItems(id,p.phaseName), un=its.filter(c=>c.met!==true).length, ready=its.length>0&&un===0;
+      return `<div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;">
+        <button class="btn" ${its.length&&!ready?'disabled':''} onclick="openLiveProgression('${id}','approve')">${its.length===0?'✓ Approve progression to '+AXIS_PHASES[curIdx+1]+' (no criteria set)':ready?'✓ Approve progression to '+AXIS_PHASES[curIdx+1]:'🔒 Progression locked — '+un+' criteria unmet'}</button>
+        ${its.length&&!ready?`<button class="btn ghost" style="border-color:var(--red);color:var(--red);" onclick="openLiveProgression('${id}','override')">⚠ Clinical override</button>`:''}
+      </div>`;})():`<div class="card" style="border-left:3px solid var(--green);margin-top:12px;"><div style="font-size:12px;color:var(--mid);"><strong style="color:var(--green);">Final phase.</strong> Exit from Return to Play = discharge to full ADP. Retention conversation happens BEFORE discharge, not after.</div></div>`}
+    <div id="prg-box" style="display:none;margin-top:12px;"></div>
+    <div class="sec">Progression audit trail — permanent record</div>
+    <div class="card" id="prg-history">${prpHistory(id)}</div>
+    <div style="font-size:11px;color:var(--muted);margin-top:8px;line-height:1.6;">Lumin phase history is the source above. Approvals recorded here are in-session until the backend lands — update the phase in Lumin to match after approving.</div>`;
+}
+function openLiveProgression(id, mode){
+  mode=mode||'approve';
+  const a=ATHLETES[id], p=a.prpLive;
+  const curIdx=AXIS_PHASES.indexOf(p.phaseName), next=AXIS_PHASES[curIdx+1];
+  const items=critItems(id,p.phaseName), unmet=items.filter(c=>c.met!==true);
+  const box=document.getElementById('prg-box'); box.style.display='block';
+  box.innerHTML=`
+    <div class="card" style="border-left:3px solid ${mode==='override'?'var(--red)':'var(--teal)'};">
+      <div style="font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:800;text-transform:uppercase;margin-bottom:8px;">${mode==='override'?'⚠ Clinical override':'Approve progression'} — ${p.phaseName} → ${next}</div>
+      ${mode==='override'?`<div style="font-size:12px;color:var(--red);background:var(--red-dim);border-radius:6px;padding:8px 10px;margin-bottom:10px;line-height:1.6;">${unmet.length} criteria not met. Criteria based progression is the Axis standard. An override is a documented clinical exception, flagged permanently with the unmet criteria named.</div>`:''}
+      ${items.length?`<div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;font-family:'Barlow Condensed',sans-serif;font-weight:700;margin-bottom:6px;">Criteria snapshot — frozen into the record</div>
+      <div style="background:var(--card);border:1px solid var(--border);border-radius:6px;padding:10px;margin-bottom:10px;max-height:170px;overflow:auto;">
+        ${items.map(c=>`<div style="display:flex;gap:8px;font-size:12px;padding:3px 0;"><span class="${c.met===true?'c-g':'c-r'}" style="width:14px;">${c.met===true?'✓':'✗'}</span><span style="flex:1;color:var(--mid);">${c.t}</span><span class="${c.met===true?'c-g':'c-r'}">${c.v||''}</span></div>`).join('')}
+      </div>`:`<div style="font-size:12px;color:var(--amber);background:rgba(255,180,0,.08);border-radius:6px;padding:8px 10px;margin-bottom:10px;">No criteria set for this phase, so this approval is recorded on clinical judgment. The record says so explicitly.</div>`}
+      <div style="font-size:11px;color:var(--muted);margin-bottom:4px;">Approver</div>
+      <select id="prg-approver" style="width:100%;background:var(--card);border:1px solid var(--border);border-radius:6px;padding:8px;color:var(--text);font-size:13px;margin-bottom:10px;"><option>${CURRENT_USER}${IS_PHYSIO?' (Physio)':' — not authorised for clinical approvals'}</option></select>
+      <div style="font-size:11px;color:var(--muted);margin-bottom:4px;">${mode==='override'?'Clinical rationale — REQUIRED. Why progress despite unmet criteria?':'Clinical note — REQUIRED. What supports this progression?'}</div>
+      <textarea id="prg-note" style="width:100%;min-height:60px;background:var(--card);border:1px solid var(--border);border-radius:6px;padding:8px;color:var(--text);font-size:12px;box-sizing:border-box;" placeholder="e.g. Full ROM, nil effusion, NordBord symmetry 94%, running blocks complete..."></textarea>
+      <label style="display:flex;gap:8px;align-items:flex-start;font-size:12px;color:var(--mid);margin:10px 0;cursor:pointer;">
+        <input type="checkbox" id="prg-confirm" style="margin-top:2px;">
+        <span>I clinically clear ${a.name.split(' ')[0]} to enter ${next} and will update the phase in Lumin.${mode==='override'?' I take clinical responsibility for progressing with unmet criteria.':''}</span>
+      </label>
+      <div style="display:flex;gap:8px;">
+        <button class="btn" style="${mode==='override'?'background:var(--red);':''}" onclick="confirmLiveProgression('${id}','${mode}')">${mode==='override'?'⚠ Record override & progress':'✓ Approve & record'}</button>
+        <button class="btn ghost" onclick="document.getElementById('prg-box').style.display='none'">Cancel</button>
+      </div>
+      <div id="prg-err" style="font-size:12px;color:var(--red);margin-top:8px;"></div>
+    </div>`;
+  if(box.scrollIntoView) box.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+async function confirmLiveProgression(id, mode){
+  mode=mode||'approve';
+  const note=document.getElementById('prg-note').value.trim();
+  const ok=document.getElementById('prg-confirm').checked;
+  const err=document.getElementById('prg-err');
+  if(!ok){ err.textContent='Tick the clinical confirmation to proceed.'; return; }
+  if(note.length<20){ err.textContent='Clinical note required — record what supports the progression.'; return; }
+  if(mode==='override'&&note.length<30){ err.textContent='Override requires a specific clinical rationale. This goes on the permanent record.'; return; }
+  const a=ATHLETES[id], p=a.prpLive;
+  const curIdx=AXIS_PHASES.indexOf(p.phaseName), next=AXIS_PHASES[curIdx+1];
+  const items=critItems(id,p.phaseName);
+  const unmet=items.filter(c=>c.met!==true).map(c=>c.t);
+  const now=new Date();
+  const at=now.toLocaleDateString('en-AU',{day:'numeric',month:'short',year:'numeric'})+', '+now.toLocaleTimeString('en-AU',{hour:'numeric',minute:'2-digit'});
+  const snapshot=items.length?items.map(c=>[c.met===true?'y':'n',c.t,c.v||'']):p.history.map(x=>['y',x.n+' entered',x.date]);
+  const entry={athlete:id,name:a.name,from:curIdx+1,to:curIdx+2,phaseName:next,
+    approver:CURRENT_USER+' (Physio)',at,kind:mode==='override'?'override':'approval',
+    note:(items.length?'':'[No criteria set — clinical judgment] ')+note+(mode==='override'?' [UNMET AT OVERRIDE: '+unmet.join('; ')+']':''),
+    snapshot:snapshot};
+  try{ await persistApproval(entry); }catch(e){ err.textContent=e.message; return; }
+  PRP_AUDIT.push(entry);
+  auditLog.unshift({name:a.name,kind:mode==='override'?'⚠ Rehab OVERRIDE':'Rehab progression',owner:CURRENT_USER,at,edited:false,deliver:p.phaseName+' → '+next});
+  p.history.push({n:next,date:now.toISOString().slice(0,10)});
+  p.phaseName=next; p.phaseEntered=now.toISOString().slice(0,10); p.weeksInPhase=0;
+  renderRehabLive(a,id);
+}
+
+function renderRehab(a, id){
+  id = id || currentAthlete;
+  const p = a.prp;
+  const tl = p.timeline.map(t=>`<div class="tl-p tl-${t.s}"><div class="l">${t.n}</div><div class="w">${t.d}</div></div>`).join('');
+  const pct = Math.round(p.criteriaMet/p.criteriaTotal*100);
+  const col = pct===100?'var(--green)':pct>=60?'var(--amber)':'var(--red)';
+  const domains = p.domains.map(d=>`
+    <div class="crit-domain"><div class="cd-l">${d.label}</div>
+    ${d.items.map(i=>`<div class="ci"><div class="ck ck-${i[0]}">${i[0]==='y'?'✓':i[0]==='n'?'✗':'~'}</div><div class="ct">${i[1]}</div><div class="cv ${i[0]==='y'?'c-g':i[0]==='n'?'c-r':'c-a'}">${i[2]}</div></div>`).join('')}
+    </div>`).join('');
+  document.getElementById('pf-rehab').innerHTML = `
+    <div class="card">
+      <div class="grid2">
+        <div>
+          <div class="cd-l" style="margin-bottom:8px;">Injury details</div>
+          <div class="info-r"><span>Injury</span><span>${p.injury}</span></div>
+          <div class="info-r"><span>Date of injury</span><span>${p.injuryDate}</span></div>
+          <div class="info-r"><span>Surgery</span><span>${p.surgery}</span></div>
+          <div class="info-r"><span>Timeline</span><span style="color:var(--teal);font-weight:600">${p.week}</span></div>
+        </div>
+        <div>
+          <div class="cd-l" style="margin-bottom:8px;">Phase status</div>
+          <div style="font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:800;text-transform:uppercase;line-height:1.2;">Phase ${p.phase} — ${p.phaseName}</div>
+          <span class="pill ${p.status==='ready'?'p-g':p.status==='progress'?'p-t':'p-r'}" style="margin-top:8px;display:inline-block;">${p.statusText}</span>
+        </div>
+      </div>
+    </div>
+    <div class="tl-strip">${tl}</div>
+    <div class="pr-row"><span>Progression criteria met</span><div class="pb-bg"><div class="pb" style="width:${pct}%;background:${col}"></div></div><span style="font-family:'Barlow Condensed',sans-serif;font-weight:700;color:${col};">${p.criteriaMet} / ${p.criteriaTotal}</span></div>
+    <div class="crit-grid">${domains}</div>
+    <div class="nxt"><div class="nxt-l">${p.next.label}</div><div class="nxt-t">${p.next.text}</div></div>
+    <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;">
+      <button class="btn" ${p.status==='ready'?'':'disabled'} onclick="openProgression('${id}','approve')">${p.status==='ready'?'✓ Approve progression to Phase '+(p.phase+1):'🔒 Progression locked — criteria unmet'}</button>
+      ${p.status!=='ready' && p.status!=='progress'?`<button class="btn ghost" style="border-color:var(--red);color:var(--red);" onclick="openProgression('${id}','override')">⚠ Clinical override</button>`:''}
+    </div>
+    <div id="prg-box" style="display:none;margin-top:12px;"></div>
+    <div class="sec">Progression audit trail — permanent record</div>
+    <div class="card" id="prg-history">${prpHistory(id)}</div>
+    <div style="font-size:11px;color:var(--muted);margin-top:8px;line-height:1.6;">Every phase change is recorded with approver, timestamp and a frozen criteria snapshot. Overrides are flagged permanently with unmet criteria named. In-session record for now — persists to the database when the backend lands. Lumin write access pending; until then Lumin is updated manually to match.</div>`;
+}
+
+// ═══════════ LIVE LUMIN DATA (synced from tenant aufb-413645) ═══════════
+const LIVE_SYNCED = '13 Jul 2026';
+const LIVE_ATHLETES = __LIVE_ATHLETES__;
+// Tag the original sample canon as demo
+Object.keys(ATHLETES).forEach(k=>{ ATHLETES[k].demo = true; });
+
+// Normalise live athletes so every profile tab renders cleanly
+Object.entries(LIVE_ATHLETES).forEach(([k,a])=>{
+  a.demo = false;
+  a.bsg = a.bsg || 'Not set';
+  a.bsgDate = a.bsgDate || '—';
+  a.bsgDays = a.bsgDays || '—';
+  a.bsgStatus = a.bsgStatus || 'Goal setting session pending';
+  a.bsgPill = a.bsgPill || 'p-a';
+  a.overview = a.overview || (a.comp>0
+    ? `Live Lumin data. ${a.wellness.filter(w=>w!==null).length}/7 wellness days this week, ${a.testing.length} testing metrics on file (NordBord via VALD sync).`
+    : 'No wellness, check-in or testing activity in the current window. This athlete is invisible to the coaching team right now.');
+  a.blueprintDue = a.blueprintDue || 'Not scheduled — set at next testing block';
+  a.goals = a.goals || [];
+  ATHLETES[k] = a;
+});
+// ── Live facility stats on Home
+let FACILITY = __FACILITY__;
+function facilityWeek(){
+  if(!FACILITY || !FACILITY.setAt) return null;
+  const elapsed=Math.floor((Date.now()-new Date(FACILITY.setAt))/(7*86400000));
+  return {week:FACILITY.week+elapsed, focus:elapsed===0?FACILITY.focus:null, stale:elapsed>0};
+}
+function renderWeekBanner(){
+  const el=document.getElementById('wk-banner'); if(!el) return;
+  const fw=facilityWeek();
+  if(!fw){
+    el.innerHTML=`<div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;">
+      <div style="font-size:13px;color:var(--muted);">No training week set. Set the current week and focus so every coach opens the same page on the same message.</div>
+      <button class="btn" onclick="editWeek()">Set current week</button></div>`;
+    return;
+  }
+  el.innerHTML=`<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:14px;flex-wrap:wrap;">
+    <div>
+      <div style="font-family:'Barlow Condensed',sans-serif;font-size:34px;font-weight:900;text-transform:uppercase;letter-spacing:.02em;line-height:1;">Week ${fw.week}</div>
+      <div style="font-size:15px;color:${fw.focus?'var(--text)':'var(--amber)'};margin-top:8px;line-height:1.6;">${fw.focus||'Focus not set for this week — update it so the team knows the message.'}</div>
+      ${FACILITY.by?`<div style="font-size:10px;color:var(--muted);margin-top:6px;">Set by ${FACILITY.by} · ${new Date(FACILITY.setAt).toLocaleDateString('en-AU',{day:'numeric',month:'short'})}</div>`:''}
+    </div>
+    <button class="btn ghost" style="font-size:11px;" onclick="editWeek()">✎ Update week / focus</button>
+  </div>
+  <div id="wk-edit" style="display:none;margin-top:14px;border-top:1px solid var(--border);padding-top:14px;"></div>`;
+}
+function editWeek(){
+  renderWeekBanner();
+  const fw=facilityWeek()||{week:1,focus:''};
+  let box=document.getElementById('wk-edit');
+  if(!box){ document.getElementById('wk-banner').insertAdjacentHTML('beforeend','<div id="wk-edit" style="margin-top:14px;"></div>'); box=document.getElementById('wk-edit'); }
+  box.style.display='block';
+  box.innerHTML=`<div style="display:flex;gap:8px;flex-wrap:wrap;align-items:flex-end;">
+    <div><div style="font-size:11px;color:var(--muted);margin-bottom:4px;">Week #</div>
+      <input id="wk-num" type="number" min="1" max="52" value="${fw.week}" style="width:70px;background:var(--card);border:1px solid var(--border);border-radius:6px;padding:9px;color:var(--text);font-size:14px;"></div>
+    <div style="flex:1;min-width:220px;"><div style="font-size:11px;color:var(--muted);margin-bottom:4px;">This week's focus — one line every coach repeats</div>
+      <input id="wk-focus" value="${(fw.focus||'').replace(/"/g,'&quot;')}" placeholder="e.g. Increase in volume, athletes learning new programs" style="width:100%;box-sizing:border-box;background:var(--card);border:1px solid var(--border);border-radius:6px;padding:9px;color:var(--text);font-size:13px;"></div>
+    <button class="btn" onclick="saveWeek()">Save</button>
+    <button class="btn ghost" onclick="renderWeekBanner()">Cancel</button>
+  </div>`;
+}
+function saveWeek(){
+  const week=parseInt(document.getElementById('wk-num').value)||1;
+  const focus=document.getElementById('wk-focus').value.trim();
+  FACILITY={week,focus,setAt:new Date().toISOString(),by:typeof CURRENT_USER!=='undefined'?CURRENT_USER:''};
+  try{ fetch('/api/facility',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(FACILITY)}).catch(()=>{}); }catch(e){}
+  renderWeekBanner();
+}
+function nameLink(k,extra){ const a=ATHLETES[k]; return `<a style="color:var(--text);cursor:pointer;text-decoration:none;border-bottom:1px dotted var(--muted);" onclick="openAthlete('${k}')">${a.name}</a><span style="color:var(--muted);font-size:11px;"> ${extra||''}</span>`; }
+function streamCard(icon,title,color,count,rows,footer){
+  return `<div class="card" style="border-left:3px solid ${color};">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+      <div style="font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;">${icon} ${title}</div>
+      <span style="font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:900;color:${color};">${count}</span>
+    </div>
+    ${rows.length?rows.map(r=>`<div style="font-size:12px;padding:5px 0;border-top:1px solid var(--border);line-height:1.5;">${r}</div>`).join(''):'<div style="font-size:12px;color:var(--muted);padding:5px 0;">Nothing flagged. Clean.</div>'}
+    ${footer?`<div style="font-size:10px;color:var(--muted);margin-top:8px;">${footer}</div>`:''}
+  </div>`;
+}
+function renderHome(){
+  renderWeekBanner();
+  const L=Object.entries(ATHLETES).filter(([k,a])=>!a.demo);
+  if(!L.length) return;
+  // stats row
+  const withWl=L.filter(([k,a])=>a.wellness.some(w=>w!==null)).length;
+  const avg=Math.round(L.reduce((s,[k,a])=>s+a.comp,0)/L.length);
+  const thin=L.filter(([k,a])=>a.tier==='thin').length;
+  document.getElementById('live-stats').innerHTML=`
+    <div class="stat"><div class="sn c-t">${L.length}</div><div class="sl">Active athletes</div></div>
+    <div class="stat"><div class="sn ${avg>=55?'c-a':'c-r'}">${avg}%</div><div class="sl">Avg data completeness</div></div>
+    <div class="stat"><div class="sn ${withWl/L.length>=.5?'c-g':'c-a'}">${withWl}</div><div class="sl">Logged wellness this week</div></div>
+    <div class="stat"><div class="sn c-r">${thin}</div><div class="sl">Thin tier</div></div>`;
+  // ── streams
+  // Clinical: hi-severity injuries, rehab stalls, psych protocol due
+  const clinical=[];
+  L.forEach(([k,a])=>{
+    (a.flags||[]).forEach(f=>{ if(f.kind==='injury'&&(f.severity??0)>=50) clinical.push(nameLink(k,`— ${f.name}${f.side?' ('+f.side+')':''}, severity ${f.severity}`)); });
+    const p=a.prpLive;
+    if(p){
+      if((p.weeksInPhase||0)>=12 && p.phaseName!=='Return to Play') clinical.push(nameLink(k,`— ⚠ ${p.weeksInPhase} wks stalled in ${p.phaseName}`));
+      const acl=(a.flags||[]).some(f=>/acl/i.test(f.name||''));
+      if(acl||(p.weeksTotal||0)>=26) clinical.push(nameLink(k,`— 🧠 psych check-in due (${acl?'ACL':''}${acl&&(p.weeksTotal||0)>=26?', ':''}${(p.weeksTotal||0)>=26?'wk '+p.weeksTotal:''})`));
+    }
+  });
+  // Attendance: zero touchpoints in 7d
+  const attend=L.filter(([k,a])=>(a.attend7??0)===0).sort((x,y)=>y[1].comp-x[1].comp);
+  const attendRows=attend.slice(0,6).map(([k,a])=>nameLink(k,`— 0 sessions or activities logged`));
+  // Program completion <60% with ≥2 sessions
+  const lowComp=L.filter(([k,a])=>a.sessPct!==null&&a.sessPct!==undefined&&a.sessTotal>=2&&a.sessPct<60).sort((x,y)=>x[1].sessPct-y[1].sessPct);
+  const compRows=lowComp.slice(0,6).map(([k,a])=>nameLink(k,`— ${a.sessPct}% of ${a.sessTotal} sessions (14d)`));
+  // Data gaps: thin tier, worst first
+  const gaps=L.filter(([k,a])=>a.tier==='thin').sort((x,y)=>x[1].comp-y[1].comp);
+  document.getElementById('attention').innerHTML=
+    streamCard('🩺','Clinical','var(--red)',clinical.length,clinical.slice(0,7),'High-severity injuries, phase stalls (12+ wks), psych protocol triggers.')+
+    streamCard('📉','Attendance','var(--red)',attend.length,attendRows,attend.length>6?attend.length-6+' more — filter roster by "Invisible".':'Zero completed sessions and zero logged activities in 7 days.')+
+    streamCard('📋','Program completion','var(--amber)',lowComp.length,compRows,'Below 60% of programmed sessions completed in the last 14 days.')+
+    streamCard('📊','Data gaps','var(--amber)',gaps.length,gaps.slice(0,6).map(([k,a])=>nameLink(k,`— ${a.comp}% complete`)),gaps.length>6?gaps.length-6+' more in the league below.':'');
+  // league
+  const lg=document.getElementById('live-league');
+  if(lg){
+    const sorted=[...L].map(([k,a])=>a).sort((x,y)=>y.comp-x.comp);
+    const rows=a=>`<div class="league-row" onclick="openAthlete('${Object.keys(ATHLETES).find(k=>ATHLETES[k]===a)}')">
+      <div class="av ${a.avc}">${a.init}</div><span style="width:150px;">${a.name}</span>
+      <div class="lg-bar"><div class="lg-fill" style="width:${a.comp}%;background:${a.comp>=80?'var(--green)':a.comp>=55?'var(--amber)':'var(--red)'}"></div></div>
+      <span class="${a.comp>=80?'c-g':a.comp>=55?'c-a':'c-r'}" style="font-family:'Barlow Condensed',sans-serif;font-weight:700;width:36px;text-align:right;">${a.comp}%</span>
+      <span class="pill ${a.comp>=80?'p-g':a.comp>=55?'p-a':'p-r'}">${a.tier==='full'?'Full brief':a.tier==='partial'?'Partial':'Thin'}</span></div>`;
+    lg.innerHTML=`<div style="font-size:11px;color:var(--teal);font-weight:700;margin-bottom:6px;text-transform:uppercase;font-family:'Barlow Condensed',sans-serif;letter-spacing:.1em;">Leading</div>`
+      +sorted.slice(0,5).map(rows).join('')
+      +`<div style="font-size:11px;color:var(--red);font-weight:700;margin:12px 0 6px;text-transform:uppercase;font-family:'Barlow Condensed',sans-serif;letter-spacing:.1em;">Invisible this week</div>`
+      +sorted.slice(-5).reverse().map(rows).join('');
+  }
+}
+document.addEventListener('DOMContentLoaded', renderHome);
+const CURRENT_USER = "__USER__";
+const PHYSIOS = __PHYSIOS__;
+const IS_PHYSIO = PHYSIOS.includes(CURRENT_USER);
+const ADP_PERSISTED = __ADP_STATE__;
+let ATHLETE_META = __ATHLETE_META__;
+Object.entries(ADP_PERSISTED).forEach(([k,st])=>{ if(ATHLETES[k]) ATHLETES[k].adp = st; });
+Object.entries(ATHLETE_META).forEach(([k,m])=>{ if(ATHLETES[k]){ if(m.blueprintDue) ATHLETES[k].blueprintDue=m.blueprintDue; if(m.mealQ) ATHLETES[k].mealQ=m.mealQ; if(m.mealPlan) ATHLETES[k].mealPlan=m.mealPlan; } });
+function persistAdp(id){
+  try{ fetch('/api/adp/'+encodeURIComponent(id),{method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify(ATHLETES[id].adp)}).catch(()=>{}); }catch(e){}
+}
+async function persistApproval(entry){
+  const r = await fetch('/api/approvals',{method:'POST',
+    headers:{'Content-Type':'application/json'}, body:JSON.stringify(entry)});
+  if(!r.ok){ const j = await r.json().catch(()=>({detail:'Save failed'})); throw new Error(j.detail||'Save failed'); }
+  return r.json();
+}
+let REVIEWS = __REVIEWS__;
+function pendingReviews(){ return REVIEWS.filter(r=>r.status==='pending'); }
+function approvedFor(key){ return REVIEWS.filter(r=>r.status==='approved'&&r.athlete_key===key).sort((a,b)=>(b.approved_at||'').localeCompare(a.approved_at||'')); }
+let reviewGroupFilter='';
+function reviewGroups(){
+  const gs=new Set();
+  REVIEWS.forEach(r=>{ const a=ATHLETES[r.athlete_key]; (a&&a.groups||[]).forEach(g=>gs.add(g)); });
+  return [...gs].sort();
+}
+function inGroup(r){ if(!reviewGroupFilter) return true; const a=ATHLETES[r.athlete_key]; return a&&(a.groups||[]).includes(reviewGroupFilter); }
+
+// ═══════════ LIVE REFERRAL ENGINE ═══════════
+function referralTriggers(){
+  const out=[];
+  Object.entries(ATHLETES).forEach(([k,a])=>{
+    (a.flags||[]).forEach(f=>{
+      if(f.kind==='injury' && (f.severity??0)>=50)
+        out.push({k,a,type:'physio',title:`${f.name}${f.side?' ('+f.side+')':''}`,detail:`Severity ${f.severity}/100, reported ${f.date||'unknown date'}.`});
+    });
+    const p=a.prpLive;
+    if(p){
+      const acl=(a.flags||[]).some(f=>/acl/i.test(f.name||''));
+      if(acl||(p.weeksTotal||0)>=26)
+        out.push({k,a,type:'psych',title:'Sports psych check in',detail:`${acl?'ACL injury':''}${acl&&(p.weeksTotal||0)>=26?' and ':''}${(p.weeksTotal||0)>=26?'rehab at week '+p.weeksTotal:''}. Axis protocol trigger.`});
+      if((p.weeksInPhase||0)>=12&&p.phaseName!=='Return to Play')
+        out.push({k,a,type:'stall',title:'Rehab stall review',detail:`${p.weeksInPhase} weeks in ${p.phaseName}.`});
+    }
+  });
+  return out;
+}
+function renderReferrals(){
+  const el=document.getElementById('referrals-live'); if(!el) return;
+  const t=referralTriggers(); window.__REFS=t;
+  const set=(x,v)=>{const e=document.getElementById(x); if(e) e.textContent=v;};
+  set('rf-physio',t.filter(x=>x.type==='physio').length);
+  set('rf-psych',t.filter(x=>x.type==='psych').length);
+  set('rf-stall',t.filter(x=>x.type==='stall').length);
+  if(!t.length){ el.innerHTML='<div class="card"><div style="font-size:12px;color:var(--muted);">No referral triggers in the current data.</div></div>'; return; }
+  const col={physio:'var(--red)',psych:'var(--purple)',stall:'var(--amber)'};
+  const lab={physio:'Physio',psych:'Sports psych',stall:'Stall review'};
+  el.innerHTML=t.map((x,i)=>`
+    <div class="card" style="border-left:3px solid ${col[x.type]};">
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px;margin-bottom:6px;">
+        <div><strong><a style="color:var(--text);cursor:pointer;text-decoration:none;border-bottom:1px dotted var(--muted);" onclick="openAthlete('${x.k}')">${x.a.name}</a></strong> <span style="font-size:12px;color:var(--mid);">— ${x.title}</span></div>
+        <span class="pill ${x.type==='physio'?'p-r':x.type==='psych'?'p-p':'p-a'}">${lab[x.type]}</span>
+      </div>
+      <div style="font-size:12px;color:var(--muted);line-height:1.6;margin-bottom:8px;">${x.detail}</div>
+      <button class="btn ghost" onclick="genReferralDraft(${i},this)">✎ Generate draft</button>
+      <div id="ref-out-${i}" style="display:none;margin-top:10px;"></div>
+    </div>`).join('');
+}
+function genReferralDraft(i,btn){
+  const x=window.__REFS[i], a=x.a, first=a.name.split(' ')[0], p=a.prpLive||{};
+  const d=new Date().toLocaleDateString('en-AU',{day:'numeric',month:'long',year:'numeric'});
+  let body='';
+  if(x.type==='psych'){
+    body=`REFERRAL: SPORTS PSYCHOLOGY CHECK IN\nAthlete: ${a.name}\nFrom: Axis Performance\nDate: ${d}\n\nREASON\n${x.detail} Under the Axis referral protocol a check in is offered automatically at this point rather than waiting for the athlete to ask.\n\nREHAB CONTEXT\nCurrent phase: ${p.phaseName||'not recorded'}. Week ${p.weeksInPhase??'?'} of this phase, week ${p.weeksTotal??'?'} of rehab overall. Progression at Axis is criteria based, not time based.\n\nWHAT WE ARE ASKING FOR\nA conversation about confidence, return to sport readiness and how ${first} is coping with the length of the process. This is a pattern observation and support referral, not a diagnosis.\n\nCOORDINATION\nPhysio and coaching staff are aware. Anything affecting loading or return to play timing should come back to the Axis clinical team.`;
+  } else if(x.type==='physio'){
+    body=`REFERRAL: PHYSIOTHERAPY SCREEN\nAthlete: ${a.name}\nFrom: Axis Performance\nDate: ${d}\n\nREASON\n${x.title}. ${x.detail}\n\nTRAINING CONTEXT\nProgram: ${a.prog||'ADP'}. Sessions completed last 14 days: ${a.sessDone||0} of ${a.sessTotal||0}. Wellness logged ${(a.wellness||[]).filter(v=>v!==null).length} of 7 days this week.\n\nWHAT WE ARE ASKING FOR\nAssessment and a loading recommendation we can build the program around. If this becomes a rehab plan we will run it through our phase structure with criteria based progression.\n\nCOORDINATION\nPlease send findings back to the Axis clinical team so the program and the rehab record stay aligned.`;
+  } else {
+    body=`INTERNAL REVIEW: REHAB STALL\nAthlete: ${a.name}\nRaised: ${d}\n\nSITUATION\n${x.detail} Rehab started ${p.started||'unknown'}, currently week ${p.weeksTotal??'?'} overall.\n\nWHY THIS IS FLAGGED\nCriteria based progression is the Axis standard and the reason athletes hold up when they return. A phase running this long means either a criterion is not being met and needs targeted work, or criteria for this phase have not been set and progress is not being measured.\n\nDECISION NEEDED\nDocument what is holding progression up and the plan to fix it, or set and assess the exit criteria for this phase.`;
+  }
+  const box=document.getElementById('ref-out-'+i); box.style.display='block';
+  box.innerHTML=`<textarea id="ref-txt-${i}" style="width:100%;box-sizing:border-box;min-height:210px;background:var(--card);border:1px solid var(--border);border-radius:8px;padding:12px;color:var(--text);font-size:12px;line-height:1.7;font-family:Barlow,sans-serif;">${body.replace(/</g,'&lt;')}</textarea>
+    <button class="btn ghost" style="margin-top:8px;" onclick="const t=document.getElementById('ref-txt-${i}');t.select();navigator.clipboard.writeText(t.value);this.textContent='✓ Copied';">Copy draft</button>`;
+  btn.style.display='none';
+}
+
+function renderReviewQueue(){
+  const el=document.getElementById('ap-reviews'); if(!el) return;
+  const pendAll=pendingReviews();
+  const heldAll=REVIEWS.filter(r=>r.status==='held');
+  const apprAll=REVIEWS.filter(r=>r.status==='approved');
+  const F=(typeof reviewStatusFilter==='undefined')?'pending':reviewStatusFilter;
+  const pend=(F==='pending'||F==='all')?pendAll.filter(inGroup):[];
+  const held=(F!=='approved')?heldAll.filter(inGroup):[];
+  const appr=(F==='approved'||F==='all')?apprAll.filter(inGroup):[];
+  const set=(x,v)=>{const e=document.getElementById(x); if(e) e.textContent=v;};
+  set('ap-pending',pendAll.length); set('ap-held',heldAll.length);
+  set('ap-approved',apprAll.length); set('ap-rehab',typeof PRP_AUDIT!=='undefined'?PRP_AUDIT.length:0);
+  const apprHtml=()=>appr.length?`<div class="sec" style="margin-top:14px;">✅ Approved</div>`+appr.slice(0,40).map(r=>`
+    <div class="card" style="border-left:3px solid var(--green);">
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px;">
+        <div><strong>${r.name}</strong> <span style="font-size:11px;color:var(--muted);">· ${r.week_label} · approved by ${r.approved_by}${r.edited?' · edited':''}</span></div>
+        <button class="btn ghost" style="font-size:10px;padding:4px 10px;" onclick="copyReview(${r.id},this)">Copy for Lumin</button>
+      </div>
+    </div>`).join(''):'';
+  const filterBar=`<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;align-items:center;">
+    <span style="font-size:11px;color:var(--muted);">Coach group:</span>
+    <button class="btn ghost rgf" data-g="" style="font-size:11px;padding:5px 12px;border-color:${reviewGroupFilter===''?'var(--teal)':'var(--border)'}" onclick="reviewGroupFilter='';renderReviewQueue()">All (${pendAll.length})</button>
+    ${reviewGroups().map(g=>{
+      const n=pendAll.filter(r=>{const a=ATHLETES[r.athlete_key];return a&&(a.groups||[]).includes(g);}).length;
+      return `<button class="btn ghost rgf" style="font-size:11px;padding:5px 12px;border-color:${reviewGroupFilter===g?'var(--teal)':'var(--border)'}" onclick="reviewGroupFilter='${g.replace(/'/g,"\\'")}';renderReviewQueue()">${g} (${n})</button>`;
+    }).join('')}
+  </div>`;
+  const heldHtml = held.length ? `<div class="sec" style="margin-top:14px;">⏸ Approved but held — do not send</div>`+held.map(r=>`
+    <div class="card" style="border-left:3px solid var(--red);">
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px;margin-bottom:6px;">
+        <div><strong>${r.name}</strong> <span style="font-size:11px;color:var(--muted);">· ${r.week_label} · held by ${r.approved_by}</span></div>
+        <span class="pill p-r">HELD: ${r.hold_reason}</span>
+      </div>
+      <div style="font-size:12px;color:var(--muted);line-height:1.6;margin-bottom:8px;">${(r.final_text||r.draft).slice(0,160).replace(/</g,'&lt;')}…</div>
+      <button class="btn" onclick="releaseReview(${r.id})">▶ Release and send</button>
+    </div>`).join('') : '';
+  if(!pend.length){
+    el.innerHTML=filterBar+`<div class="card" style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;">
+      <div style="font-size:12px;color:var(--muted);">No pending weekly reviews${reviewGroupFilter?' in this group':''}. They generate automatically every Monday at 2am.</div>
+      <button class="btn ghost" onclick="genReviews(this)">⚡ Generate this week's briefs</button></div>`+heldHtml+apprHtml();
+    return;
+  }
+  el.innerHTML=filterBar+`<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;flex-wrap:wrap;gap:8px;">
+      <span style="font-size:12px;color:var(--mid);"><strong style="color:var(--teal);">${pend.length}</strong> reviews waiting. Read, edit if needed, approve. Approved reviews land on the athlete's Weekly Review tab and are copied into their Lumin chat.</span>
+      <button class="btn ghost" style="font-size:11px;" onclick="genReviews(this)">⚡ Generate</button></div>`+
+    pend.map(r=>`
+    <div class="card" id="rev-${r.id}" style="border-left:3px solid var(--teal);">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;flex-wrap:wrap;gap:6px;">
+        <div><strong>${r.name}</strong> <span style="font-size:11px;color:var(--muted);">· ${r.week_label}</span></div>
+        <span class="pill p-a">Pending</span>
+      </div>
+      <textarea id="rev-txt-${r.id}" style="width:100%;box-sizing:border-box;min-height:150px;background:var(--card);border:1px solid var(--border);border-radius:8px;padding:12px;color:var(--text);font-size:13px;line-height:1.7;font-family:Barlow,sans-serif;">${r.draft.replace(/</g,'&lt;')}</textarea>
+      <div style="display:flex;gap:8px;margin-top:10px;align-items:center;flex-wrap:wrap;">
+        <button class="btn" onclick="approveReview(${r.id})">✓ Approve and send</button>
+        <button class="btn ghost" style="border-color:var(--red);color:var(--red);" onclick="holdUI(${r.id})">⏸ Approve but hold</button>
+        <span id="rev-err-${r.id}" style="font-size:12px;color:var(--red);"></span>
+      </div>
+      <div id="rev-hold-${r.id}" style="display:none;margin-top:8px;gap:8px;align-items:center;flex-wrap:wrap;">
+        <input id="rev-reason-${r.id}" value="Payment outstanding" style="flex:1;min-width:200px;background:var(--card);border:1px solid var(--border);border-radius:6px;padding:8px 10px;color:var(--text);font-size:12px;">
+        <button class="btn" style="background:var(--red);" onclick="holdReview(${r.id})">Confirm hold</button>
+      </div>
+    </div>`).join('')+heldHtml+apprHtml();
+}
+function holdUI(id){ const b=document.getElementById('rev-hold-'+id); b.style.display=b.style.display==='none'?'flex':'none'; }
+async function holdReview(id){
+  const txt=document.getElementById('rev-txt-'+id).value;
+  const reason=document.getElementById('rev-reason-'+id).value.trim();
+  try{
+    const res=await fetch('/api/reviews/'+id+'/approve',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'hold',final_text:txt,reason})});
+    if(!res.ok){ const j=await res.json().catch(()=>({})); throw new Error(j.detail||'Failed'); }
+    const j=await res.json();
+    const r=REVIEWS.find(x=>x.id===id);
+    r.status='held'; r.final_text=txt; r.hold_reason=reason; r.approved_by=j.approved_by;
+    renderReviewQueue();
+  }catch(e){ document.getElementById('rev-err-'+id).textContent=e.message; }
+}
+async function releaseReview(id){
+  try{
+    const res=await fetch('/api/reviews/'+id+'/approve',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'release'})});
+    if(!res.ok){ const j=await res.json().catch(()=>({})); throw new Error(j.detail||'Failed'); }
+    const r=REVIEWS.find(x=>x.id===id);
+    r.status='approved'; r.approved_at=new Date().toISOString();
+    try{ navigator.clipboard.writeText(r.final_text||r.draft); }catch(e){}
+    renderReviewQueue();
+  }catch(e){ alert(e.message); }
+}
+async function approveReview(id){
+  const txt=document.getElementById('rev-txt-'+id).value;
+  try{
+    const res=await fetch('/api/reviews/'+id+'/approve',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'approve',final_text:txt})});
+    if(!res.ok){ const j=await res.json().catch(()=>({})); throw new Error(j.detail||'Failed'); }
+    const j=await res.json();
+    const r=REVIEWS.find(x=>x.id===id);
+    r.status='approved'; r.final_text=txt; r.approved_by=j.approved_by; r.approved_at=new Date().toISOString();
+    try{ navigator.clipboard.writeText(txt); }catch(e){}
+    auditLog.unshift({name:r.name, kind:'Weekly review', owner:j.approved_by, at:new Date().toLocaleDateString('en-AU',{day:'numeric',month:'short'})+', '+new Date().toLocaleTimeString('en-AU',{hour:'numeric',minute:'2-digit'}), edited:txt.trim()!==r.draft.trim(), deliver:'Copied for Lumin chat'});
+    renderReviewQueue(); if(typeof renderAudit==='function') renderAudit();
+  }catch(e){ document.getElementById('rev-err-'+id).textContent=e.message; }
+}
+async function genReviews(btn){
+  btn.disabled=true; btn.textContent='Generating…';
+  try{ const r=await fetch('/api/reviews/generate',{method:'POST'}); const j=await r.json();
+    if(j.ok){ location.reload(); } else throw new Error(j.detail||'failed');
+  }catch(e){ alert('Generate failed: '+e.message); btn.disabled=false; }
+}
+function copyReview(id,btn){
+  const r=REVIEWS.find(x=>x.id===id);
+  navigator.clipboard.writeText(r.final_text||r.draft).then(()=>{ btn.textContent='✓ Copied'; setTimeout(()=>btn.textContent='Copy for Lumin',1500); });
+}
+async function syncNow(btn){
+  btn.disabled=true; btn.textContent='Syncing…';
+  try{
+    const r=await fetch('/api/sync',{method:'POST'});
+    const j=await r.json();
+    if(j.ok){ btn.textContent='Done — reloading'; location.reload(); }
+    else { alert('Sync failed: '+j.detail); btn.disabled=false; btn.textContent='↻ Sync now'; }
+  }catch(e){ alert('Sync failed: '+e); btn.disabled=false; btn.textContent='↻ Sync now'; }
+}
+
+// ═══════════ ADP BLOCK SYSTEM — 8 x 7-week blocks per cycle (56 weeks) ═══════════
+// Sport type sets the default theme arc across the 8 blocks. Blocks advance when
+// the coach completes them (training-defined, not calendar-defined).
+const BLOCK_WEEKS = 7;
+const ADP_SPORTS = {
+  field: {label:'Field (AFL / Football)', arc:[
+    {theme:'Foundation', d:'Post-season reset. Movement quality, tissue capacity, aerobic base. Fix what the season broke.'},
+    {theme:'General Prep 1', d:'Build the engine. Hypertrophy, work capacity. Highest volume of the cycle.'},
+    {theme:'General Prep 2', d:'Max strength on top of the base. Eccentric hamstring capacity is non-negotiable here.'},
+    {theme:'Specific Prep', d:'Convert strength to power and speed. RFD, jumps, sprint exposure. Volume down, intent up.'},
+    {theme:'Pre-Comp', d:'Sharpen. Game-speed conditioning, top-end speed, competition simulation. Testing benchmark block.'},
+    {theme:'In-Season 1', d:'Perform and protect. 2 quality strength doses/week, manage load around games.'},
+    {theme:'In-Season 2', d:'Hold strength, top-up speed. Watch cumulative fatigue — wellness drives the week.'},
+    {theme:'In-Season 3 / Finals', d:'Freshness wins finals. Minimum effective dose, maximum recovery. Peak when it matters.'}]},
+  court: {label:'Court (Netball / Basketball)', arc:[
+    {theme:'Foundation', d:'Reset. Ankle/knee tissue capacity, landing mechanics, aerobic base.'},
+    {theme:'General Prep 1', d:'Strength base. Calf and quad capacity for court volume.'},
+    {theme:'General Prep 2', d:'Max strength plus lower-limb stiffness work.'},
+    {theme:'Specific Prep', d:'Reactive strength and change of direction. Plyometric progression, COD under speed.'},
+    {theme:'Pre-Comp', d:'Court conditioning to game demands. Repeat-effort speed, small-sided intensity. Benchmark testing.'},
+    {theme:'In-Season 1', d:'Maintain strength and stiffness, protect ankles/knees under weekly court load.'},
+    {theme:'In-Season 2', d:'Hold the base, manage court volume. Hop symmetry checks monthly.'},
+    {theme:'In-Season 3 / Finals', d:'Fresh legs jump higher. Minimum dose, sharpen reactivity, recover hard.'}]},
+  hybrid: {label:'Hybrid / General athlete', arc:[
+    {theme:'Foundation', d:'Movement quality, tissue capacity, aerobic base.'},
+    {theme:'Build 1', d:'Hypertrophy and work capacity.'},
+    {theme:'Build 2', d:'Max strength.'},
+    {theme:'Power', d:'Strength-to-power conversion. Jumps, throws, sprint work.'},
+    {theme:'Speed', d:'Top-end speed and reactive strength.'},
+    {theme:'Perform 1', d:'Sport-specific performance block.'},
+    {theme:'Perform 2', d:'Hold qualities, manage load.'},
+    {theme:'Peak', d:'Freshness and sharpening.'}]}
+};
+function newCycle(sport, num){
+  return {sport, cycle:num||1, started:new Date().toISOString().slice(0,10), current:0, view:null,
+    blocks:ADP_SPORTS[sport].arc.map((b,i)=>({n:i+1, theme:b.theme, d:b.d, focuses:[], completedAt:null}))};
+}
+function adpState(a){
+  if(!a.adp || !a.adp.blocks) a.adp = newCycle('field',1);
+  return a.adp;
+}
+function blockWeek(st){
+  // estimated week within current block from cycle start + completed blocks
+  const start=new Date(st.started); const wk=Math.floor((Date.now()-start)/(7*86400000))+1;
+  const est=wk - st.current*BLOCK_WEEKS;
+  return Math.max(1, Math.min(BLOCK_WEEKS, est));
+}
+function num(v){ const m=String(v).match(/-?\d+(\.\d+)?/); return m?parseFloat(m[0]):null; }
+function adpAdvice(a){
+  const tips=[];
+  const L=a.testing.find(t=>/left max force/i.test(t.n)), R=a.testing.find(t=>/right max force/i.test(t.n));
+  if(L&&R){ const l=num(L.v), r=num(R.v);
+    if(l&&r){ const lsi=Math.round(Math.min(l,r)/Math.max(l,r)*100);
+      if(lsi<90) tips.push({s:'r',t:`Hamstring asymmetry ${lsi}% LSI (${l<r?'left':'right'} weaker: ${Math.round(Math.min(l,r))} vs ${Math.round(Math.max(l,r))}N). Unilateral eccentric focus this block; retest in 4 weeks.`});
+      else tips.push({s:'g',t:`Hamstring symmetry healthy — ${lsi}% LSI on NordBord.`});
+    }}
+  a.testing.forEach(t=>{
+    if(!/max force|jump height|peak power/i.test(t.n)) return;
+    const v=num(t.v), p=num(t.prev);
+    if(v&&p&&p>0 && (p-v)/p>0.08) tips.push({s:'a',t:`${t.n} down ${Math.round((p-v)/p*100)}% vs previous (${t.v} from ${t.prev}). If load is high this may be fatigue, not fitness — check wellness before programming reacts.`});
+  });
+  const latest=a.testing.map(t=>t.observed).filter(Boolean).sort().reverse()[0];
+  if(latest){ const days=Math.round((Date.now()-new Date(latest))/86400000);
+    if(days>60) tips.push({s:'a',t:`No testing in ${days} days. Book a monitoring battery — a NordBord check takes 5 minutes.`});
+  } else if(!a.demo) tips.push({s:'a',t:'No testing data on file. Baseline battery required before individualised programming means anything.'});
+  return tips;
+}
+function renderAdpSeason(id){
+  const a=ATHLETES[id]; if(!a || a.prog==='PRP') return '';
+  const st=adpState(a);
+  const sport=ADP_SPORTS[st.sport];
+  const cur=st.current;
+  const done=cur>=st.blocks.length;
+  const view=(st.view===null||st.view===undefined)?Math.min(cur,7):st.view;
+  const b=st.blocks[view];
+  const strip=st.blocks.map((bl,i)=>`<div class="tl-p tl-${bl.completedAt?'done':i===cur?'act':'fut'}" style="cursor:pointer;${i===view?'outline:2px solid var(--teal);outline-offset:-2px;border-radius:6px;':''}" onclick="adpState(ATHLETES['${id}']).view=${i};refreshAdp('${id}')"><div class="l">B${bl.n}</div><div class="w">${bl.completedAt?'done':i===cur?'current':''}</div></div>`).join('');
+  const focuses=b.focuses;
+  const frows=focuses.map((f,fi)=>`
+    <div style="display:flex;gap:8px;align-items:center;padding:6px 0;border-top:1px solid var(--border);">
+      <span style="flex:1;font-size:13px;color:${f.met===true?'var(--green)':f.met===false?'var(--red)':'var(--text)'};">${f.t}</span>
+      <button class="resolve" style="${f.met===true?'background:var(--green-dim);color:var(--green);border-color:var(--green);':''}" onclick="setFocusMet('${id}',${view},${fi},true)">✓ Met</button>
+      <button class="resolve" style="${f.met===false?'background:var(--red-dim);color:var(--red);border-color:var(--red);':''}" onclick="setFocusMet('${id}',${view},${fi},false)">✗ Missed</button>
+      <button class="resolve" onclick="delFocus('${id}',${view},${fi})" title="remove">×</button>
+    </div>`).join('');
+  const met=focuses.filter(f=>f.met===true).length, missed=focuses.filter(f=>f.met===false).length;
+  const tips=adpAdvice(a);
+  const tipHtml=tips.length?tips.map(t=>`<div style="display:flex;gap:8px;font-size:12px;line-height:1.6;padding:5px 0;border-top:1px solid var(--border);"><span class="${t.s==='r'?'c-r':t.s==='a'?'c-a':'c-g'}" style="flex-shrink:0;">${t.s==='r'?'⚠':t.s==='a'?'▲':'✓'}</span><span style="color:var(--mid);">${t.t}</span></div>`).join(''):'<div style="font-size:12px;color:var(--muted);padding:5px 0;">No individual flags from testing data.</div>';
+  // cycle-complete prompt
+  const cyclePrompt = done ? `
+    <div class="card" style="border-left:3px solid var(--teal);text-align:center;padding:20px;">
+      <div style="font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:900;text-transform:uppercase;margin-bottom:6px;">🏁 Cycle ${st.cycle} complete — all 8 blocks done</div>
+      <div style="font-size:12px;color:var(--mid);margin-bottom:12px;">56 weeks of work in the books. Choose the sport type for the next cycle — same sport rolls the arc forward, new sport rebuilds it.</div>
+      <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;">
+        ${Object.entries(ADP_SPORTS).map(([k,s])=>`<button class="btn ${k===st.sport?'':'ghost'}" onclick="startCycle('${id}','${k}')">${s.label}</button>`).join('')}
+      </div>
+    </div>` : '';
+  const isCurrent=view===cur && !done;
+  return `
+    <div class="sec" style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;">Season plan — Cycle ${st.cycle} · 8 × ${BLOCK_WEEKS}-week blocks (56 wks)
+      <span style="display:flex;gap:8px;align-items:center;">
+        <span style="font-size:10px;color:var(--muted);text-transform:none;letter-spacing:0;font-weight:400;">${sport.label}</span>
+        <button class="btn ghost" style="font-size:10px;padding:4px 10px;" onclick="document.getElementById('cycle-early').style.display='block'">↻ New cycle / change sport</button>
+      </span>
+    </div>
+    <div id="cycle-early" style="display:none;" class="card">
+      <div style="font-size:12px;color:var(--mid);margin-bottom:10px;"><strong style="color:var(--amber);">Start a new cycle early.</strong> Use this when an athlete changes sport or the season structure resets. The current cycle's record is kept; a fresh 8-block cycle begins.</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        ${Object.entries(ADP_SPORTS).map(([k,s])=>`<button class="btn ghost" onclick="startCycle('${id}','${k}')">${s.label}</button>`).join('')}
+        <button class="btn ghost" onclick="document.getElementById('cycle-early').style.display='none'">Cancel</button>
+      </div>
+    </div>
+    <div class="tl-strip">${strip}</div>
+    ${cyclePrompt}
+    ${!done?`<div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px;margin-bottom:4px;">
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:800;text-transform:uppercase;">Block ${b.n} of 8
+          ${b.completedAt?`<span class="pill p-g" style="margin-left:6px;">Completed ${b.completedAt}</span>`:isCurrent?`<span class="pill p-t" style="margin-left:6px;">Current · ~Wk ${blockWeek(st)} of ${BLOCK_WEEKS}</span>`:'<span class="pill p-a" style="margin-left:6px;">Upcoming</span>'}
+        </div>
+        ${focuses.length?`<span style="font-size:11px;color:var(--muted);">${met} met · ${missed} missed · ${focuses.length-met-missed} open</span>`:''}
+      </div>
+      <div style="font-size:13px;color:var(--mid);line-height:1.7;margin-bottom:10px;">${b.d}</div>
+      <div style="font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--teal);">Block focuses — set by coach (max 3)</div>
+      ${frows||'<div style="font-size:12px;color:var(--muted);padding:8px 0;">No focuses set for this block yet.</div>'}
+      ${focuses.length<3?`<div style="display:flex;gap:8px;margin-top:10px;">
+        <input id="adp-focus-in" placeholder="e.g. Nordic strength — close the left/right gap" style="flex:1;background:var(--card);border:1px solid var(--border);border-radius:6px;padding:8px 10px;color:var(--text);font-size:12px;" onkeydown="if(event.key==='Enter')addFocus('${id}',${view})">
+        <button class="btn ghost" onclick="addFocus('${id}',${view})">+ Add focus</button>
+      </div>`:'<div style="font-size:11px;color:var(--muted);margin-top:8px;">3 focuses is the cap — that is deliberate. More than 3 and nothing is a focus.</div>'}
+      ${isCurrent?`<button class="btn" style="margin-top:12px;" onclick="completeBlock('${id}')">✓ Complete Block ${b.n}${b.n<8?' → start Block '+(b.n+1):' → finish cycle'}</button>
+      <div style="font-size:10px;color:var(--muted);margin-top:6px;">Mark focuses met/missed before completing — the block record freezes what happened.</div>`:''}
+    </div>`:''}
+    <div class="card" style="border-left:3px solid var(--teal);">
+      <div style="font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--teal);margin-bottom:4px;">Individual focus advice — from live testing</div>
+      ${tipHtml}
+    </div>
+    <div style="font-size:11px;color:var(--muted);margin:4px 0 8px;">Blocks advance when the coach completes them, not by the calendar. In-session record for now — persists when the backend lands. Default block themes per sport; send the real Axis structure to replace them.</div>`;
+}
+function refreshAdp(id){ const el=document.getElementById('adp-season'); if(el) el.innerHTML=renderAdpSeason(id); }
+function addFocus(id,block){
+  const v=document.getElementById('adp-focus-in').value.trim(); if(!v) return;
+  adpState(ATHLETES[id]).blocks[block].focuses.push({t:v,met:null});
+  refreshAdp(id); persistAdp(id);
+}
+function delFocus(id,block,i){ adpState(ATHLETES[id]).blocks[block].focuses.splice(i,1); refreshAdp(id); persistAdp(id); }
+function setFocusMet(id,block,i,val){
+  const f=adpState(ATHLETES[id]).blocks[block].focuses[i];
+  f.met = f.met===val?null:val;
+  refreshAdp(id); persistAdp(id);
+}
+function completeBlock(id){
+  const st=adpState(ATHLETES[id]);
+  const b=st.blocks[st.current];
+  const open=b.focuses.filter(f=>f.met===null).length;
+  if(open && !window.confirm(open+' focus(es) still open (not marked met or missed). Complete the block anyway? Open focuses stay on the record as unresolved.')) return;
+  b.completedAt=new Date().toLocaleDateString('en-AU',{day:'numeric',month:'short'});
+  st.current++;
+  st.view=Math.min(st.current,7);
+  refreshAdp(id); persistAdp(id);
+}
+function startCycle(id,sport){
+  const a=ATHLETES[id];
+  const prev=a.adp;
+  a.adpHistory=(a.adpHistory||[]); if(prev) a.adpHistory.push(prev);
+  a.adp=newCycle(sport,(prev?prev.cycle:0)+1);
+  refreshAdp(id); persistAdp(id);
+}
+
+
+let rosterFilter='live', rosterSearch='', rosterGroup='';
+function buildRoster(){
+  const bar = document.getElementById('roster-bar');
+  if(bar && !bar.innerHTML){
+    bar.innerHTML = `
+      <input id="roster-q" placeholder="Search ${Object.values(ATHLETES).filter(a=>!a.demo).length} live athletes..." style="flex:1;min-width:180px;background:var(--card);border:1px solid var(--border);border-radius:8px;padding:9px 12px;color:var(--text);font-size:13px;" oninput="rosterSearch=this.value.toLowerCase();buildRoster();">
+      <button class="btn ghost rfb" data-f="live" onclick="setRF('live')">Live (Lumin)</button>
+      <button class="btn ghost rfb" data-f="signal" onclick="setRF('signal')">With data</button>
+      <button class="btn ghost rfb" data-f="silent" onclick="setRF('silent')">Invisible</button>
+      <select id="roster-group" onchange="rosterGroup=this.value;buildRoster();" style="background:var(--card);border:1px solid var(--border);border-radius:8px;padding:8px 10px;color:var(--text);font-size:12px;">
+        <option value="">All groups</option>
+        ${[...new Set(Object.values(ATHLETES).filter(a=>!a.demo).flatMap(a=>a.groups||[]))].sort().map(g=>`<option>${g}</option>`).join('')}
+      </select>`;
+  }
+  document.querySelectorAll('.rfb').forEach(b=>b.style.borderColor = b.dataset.f===rosterFilter?'var(--teal)':'var(--border)');
+  let list = Object.entries(ATHLETES).filter(([id,a])=>{
+    if(rosterSearch && !a.name.toLowerCase().includes(rosterSearch)) return false;
+    if(rosterGroup && !(a.groups||[]).includes(rosterGroup)) return false;
+    if(rosterFilter==='live') return !a.demo;
+    if(rosterFilter==='signal') return !a.demo && (a.comp>0 || a.testing.length);
+    if(rosterFilter==='silent') return !a.demo && a.comp===0 && !a.testing.length;
+    return true;
+  });
+  list.sort((x,y)=> (y[1].flags.length-x[1].flags.length) || (y[1].comp-x[1].comp) || (y[1].testing.length-x[1].testing.length) || x[1].name.localeCompare(y[1].name));
+  document.getElementById('roster').innerHTML = list.map(([id,a])=>`
+    <div class="rcard" onclick="openAthlete('${id}')">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+        <div class="av ${a.avc}">${a.init}</div>
+        <div><div class="rname">${a.name}</div><div class="rsub">${a.sub.split('·')[0]}</div></div>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:6px;">
+        <span class="pill ${a.prog==='PRP'?'p-p':'p-t'}">${a.prog||'ADP'}</span>
+        <span class="pill ${a.comp>=80?'p-g':a.comp>=55?'p-a':'p-r'}">${a.comp}%</span>
+        ${a.demo?'<span class="pill p-a">DEMO</span>':`<span style="font-size:10px;color:var(--muted);">${a.testing.length? a.testing.length+' tests':''}</span>`}
+      </div>
+    </div>`).join('') || '<div style="color:var(--muted);font-size:13px;padding:20px;">No athletes match.</div>';
+}
+function setRF(f){rosterFilter=f;buildRoster();}
+
+// ═══════════ ATHLETE PROFILE ═══════════
+function openAthlete(id){
+  currentAthlete = id;
+  const a = ATHLETES[id];
+  if(!a){ console.warn('openAthlete: unknown id', id); return; }
+  currentAthlete = id;
+  document.querySelectorAll('.panel').forEach(x=>x.classList.remove('active'));
+  document.querySelectorAll('.nav .tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('nav-athletes').classList.add('active');
+  document.getElementById('p-profile').classList.add('active');
+  document.getElementById('pf-av').className = 'av '+a.avc;
+  document.getElementById('pf-av').textContent = a.init;
+  document.getElementById('pf-name').textContent = a.name;
+  document.getElementById('pf-sub').textContent = a.sub;
+  document.getElementById('pf-comp').innerHTML = `<span class="pill ${a.comp>=80?'p-g':a.comp>=55?'p-a':'p-r'}" style="font-size:12px;padding:5px 14px;">${a.comp}% data completeness</span>`;
+  document.querySelectorAll('#p-profile .stab').forEach((s,i)=>s.classList.toggle('active',i===0));
+  document.querySelectorAll('#p-profile .sv').forEach((v,i)=>v.classList.toggle('active',i===0));
+  document.getElementById('stab-rehab').style.display = a.prpLive ? '' : 'none';
+  renderOverview(a, id); if(a.prpLive) renderRehabLive(a, id); renderWeekly(a,id); renderTesting(a, id); renderMeals(a,id); renderGoals(a);
+  if(a.mealPlan){ mealPlan=a.mealPlan; const mo=document.getElementById('meal-out'); if(mo){ mo.style.display='block'; try{ document.getElementById('meal-tags').innerHTML=(mealPlan.athleteSnapshot||[]).map(t=>`<span class="pill p-t">${t}</span>`).join(''); const td=mealPlan.tdee||{}; document.getElementById('meal-tdee').innerHTML=`BMR <strong style="color:var(--text)">${td.bmr}</strong> + sessions <strong style="color:var(--text)">${td.sessionBurn}</strong> + NEAT <strong style="color:var(--text)">${td.neat}</strong> + TEF <strong style="color:var(--text)">${td.tef}</strong> = TDEE <strong style="color:var(--teal)">${td.total} kcal</strong> &middot; ${td.modifier} &middot; Target: <strong style="color:var(--teal)">${td.target}</strong>`; document.getElementById('meal-rationale').textContent=mealPlan.rationale; document.getElementById('meal-days').innerHTML=mealPlan.days.map((d,i)=>`<button class="dtab ${d.isTrainingDay?'training':''} ${i===0?'active':''}" onclick="showMealDay(${i})">${d.day}${d.isTrainingDay?' 🏋':''}</button>`).join(''); showMealDay(0); }catch(e){} } }
+}
+function pfTab(t,btn){
+  document.querySelectorAll('#p-profile .stab').forEach(s=>s.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('#p-profile .sv').forEach(v=>v.classList.remove('active'));
+  document.getElementById('pf-'+t).classList.add('active');
+}
+const DAYS=['MON','TUE','WED','THU','FRI','SAT','SUN'];
+function renderOverview(a, id){ id = id || currentAthlete;
+  const wl = a.wellness.map((w,i)=>{
+    const col = w===null?'var(--border)':w>=7?'var(--teal)':w>=5?'var(--amber)':'var(--red)';
+    const tc = w===null?'var(--muted)':w>=7?'var(--teal)':w>=5?'var(--amber)':'var(--red)';
+    return `<div style="flex:1;background:var(--card);border:1px solid var(--border);border-top:2px solid ${col};border-radius:6px;padding:8px 4px;text-align:center;">
+      <div style="font-family:'Barlow Condensed',sans-serif;font-size:9px;font-weight:700;color:var(--muted);">${DAYS[i]}</div>
+      <div style="font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:800;color:${tc};">${w===null?'—':w}</div></div>`;
+  }).join('');
+  const flags = a.flags.map(f=>`
+    <div class="flag">
+      <div class="flag-ic" style="background:${f.bg}">${f.ic}</div>
+      <div style="flex:1"><div class="flag-t">${f.t} <span class="pill ${f.pill}">${f.pl}</span></div><div class="flag-d">${f.d}</div></div>
+      <button class="resolve" onclick="res(this)">Resolve</button>
+    </div>`).join('') || '<div style="font-size:12px;color:var(--muted);padding:8px 0;">No active flags. Clean sheet.</div>';
+  document.getElementById('pf-overview').innerHTML = `
+    <div class="bsg">
+      <div style="font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--teal);margin-bottom:6px;">★ Big Scary Goal</div>
+      <div style="font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:900;text-transform:uppercase;line-height:1.1;">${a.bsg} — <span style="color:var(--teal);">${a.bsgDate}</span></div>
+      <div style="display:flex;gap:14px;font-size:11px;color:var(--mid);margin-top:8px;flex-wrap:wrap;align-items:center;">
+        <span>${a.bsgDays} days remaining</span><span class="pill ${a.bsgPill}">${a.bsgStatus}</span>
+      </div>
+    </div>
+    <div class="card"><div style="font-size:13px;line-height:1.7;color:var(--mid);"><strong style="color:var(--text);">This week:</strong> ${a.overview}</div></div>
+    <div id="adp-season">${renderAdpSeason(id)}</div>
+    <div class="sec">Active flags</div>
+    <div class="card">${flags}</div>
+    <div class="sec">Wellness — this week</div>
+    <div style="display:flex;gap:6px;">${wl}</div>`;
+}
+function renderWeekly(a,id){
+  const hist=approvedFor(id);
+  const pend=REVIEWS.find(r=>r.status==='pending'&&r.athlete_key===id);
+  const held=REVIEWS.find(r=>r.status==='held'&&r.athlete_key===id);
+  const banner = a.tier==='full'
+    ? `<div class="comp-banner comp-full"><div class="comp-score c-g">${a.comp}%</div><div><div style="font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:14px;text-transform:uppercase;">Full data — full brief unlocked</div><div style="font-size:11px;color:var(--mid);margin-top:2px;">This is the standard. Every section of the brief is available.</div></div></div>`
+    : a.tier==='partial'
+    ? `<div class="comp-banner comp-mid"><div class="comp-score c-a">${a.comp}%</div><div><div style="font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:14px;text-transform:uppercase;">Partial data — partial brief</div><div style="font-size:11px;color:var(--mid);margin-top:2px;">Some sections limited. Close the gaps below and they open up.</div></div></div>`
+    : `<div class="comp-banner comp-low"><div class="comp-score c-r">${a.comp}%</div><div><div style="font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:14px;text-transform:uppercase;">Incomplete data — thin brief</div><div style="font-size:11px;color:var(--mid);margin-top:2px;">The brief shows exactly what the missing data cost.</div></div></div>`;
+  const wlDays=(a.wellness||[]).filter(v=>v!==null).length;
+  const locks=[];
+  if(wlDays<5) locks.push(['Wellness trend analysis',`Only ${wlDays} of 7 days logged. Full wellness unlocks a day by day breakdown of what drove good and bad sessions.`]);
+  if(!(a.testing||[]).length&&!(a.valdTests||[]).length) locks.push(['Testing comparison','No results on file, so no progress tracking, no norms comparison, no PB history.']);
+  if(!(a.sessTotal||0)) locks.push(['Training analysis','Nothing ticked off, so no completion trend and no link between training and results.']);
+  const adp=a.adp;
+  const hasFocus=adp&&adp.blocks&&(adp.blocks[Math.min(adp.current,adp.blocks.length-1)].focuses||[]).length;
+  if(!hasFocus&&!a.prpLive) locks.push(['Personal focuses','No block focuses set with the coach, so the brief cannot say what to prioritise next week.']);
+  const lockHtml=locks.map(l=>`<div class="locked"><div class="locked-t">🔒 ${l[0]} — locked</div><div class="locked-d">${l[1]}</div></div>`).join('');
+  document.getElementById('pf-weekly').innerHTML=`
+    ${banner}
+    ${pend?`<div class="card" style="border-left:3px solid var(--amber);"><div style="font-size:12px;color:var(--mid);">📬 This week's brief is generated and <strong style="color:var(--amber);">waiting for coach approval</strong> (${pend.week_label}). Approve it in the Approvals tab.</div></div>`:''}
+    ${held?`<div class="card" style="border-left:3px solid var(--red);"><div style="font-size:12px;color:var(--mid);">⏸ <strong style="color:var(--red);">Approved but HELD, do not send.</strong> Reason: ${held.hold_reason}. Release it from the Approvals tab when resolved.</div></div>`:''}
+    ${lockHtml}
+    <div class="sec">Approved weekly briefs</div>
+    ${hist.length?hist.map(r=>`
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;flex-wrap:wrap;gap:6px;">
+          <div><strong>${r.week_label}</strong> <span style="font-size:11px;color:var(--muted);">· approved by ${r.approved_by}${r.edited?' · edited':''}</span></div>
+          <button class="btn ghost" style="font-size:10px;padding:4px 10px;" onclick="copyReview(${r.id},this)">Copy for Lumin</button>
+        </div>
+        <div style="font-size:13px;color:var(--mid);line-height:1.8;white-space:pre-wrap;">${(r.final_text||r.draft).replace(/</g,'&lt;')}</div>
+      </div>`).join('')
+    :'<div class="card"><div style="font-size:12px;color:var(--muted);">No approved briefs yet. Briefs generate every Monday at 2am and appear here once a coach approves them.</div></div>'}
+    <div class="card" style="border-left:3px solid var(--purple);">
+      <div style="font-size:11px;color:var(--mid);line-height:1.6;"><strong style="color:var(--purple);">Delivery:</strong> auto-generated Monday 2am, coach reviews and edits in Approvals, approve and send or hold, then copy into the athlete's Lumin chat. Nothing reaches an athlete without a coach's name on it.</div>
+    </div>`;
+}
+function valdPanel(a){
+  const vt=a.valdTests||[];
+  if(!vt.length) return '';
+  const bySys={};
+  vt.forEach(t=>{(bySys[t.sys]=bySys[t.sys]||[]).push(t)});
+  return `<div class="sec">VALD direct feed — last 12 tests</div>
+    <div class="card">`+Object.entries(bySys).map(([sys,rows])=>`
+      <div style="font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--teal);margin:8px 0 4px;">${sys}</div>
+      ${rows.slice(0,6).map(t=>{
+        const lr=(t.L||t.R)?` — L ${Math.round(t.L||0)}N / R ${Math.round(t.R||0)}N${t.L&&t.R?' ('+Math.round(Math.min(t.L,t.R)/Math.max(t.L,t.R)*100)+'% LSI)':''}`:'';
+        return `<div style="display:flex;justify-content:space-between;font-size:12px;padding:3px 0;border-top:1px solid var(--border);"><span style="color:var(--mid);">${t.type}${lr}</span><span style="color:var(--muted);">${(t.date||'').slice(0,10)}</span></div>`;
+      }).join('')}`).join('')+
+    `<div style="font-size:10px;color:var(--muted);margin-top:8px;">Direct from VALD API (tenant: Axis Performance). Trial-level metrics (jump height, asymmetry per test) wire in next — these confirm the feed.</div></div>`;
+}
+
+// ═══════════ PER-ATHLETE META + DOCUMENT GENERATORS ═══════════
+function metaOf(id){ return ATHLETE_META[id]||{}; }
+function saveMeta(id,obj){
+  ATHLETE_META[id]=Object.assign({},metaOf(id),obj);
+  try{ fetch('/api/meta/'+encodeURIComponent(id),{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(ATHLETE_META[id])}).catch(()=>{}); }catch(e){}
+}
+function editBlueprintDue(id){
+  const cur=(metaOf(id).blueprintDue)||'';
+  document.getElementById('bp-due').innerHTML=`<input id="bp-in" value="${cur.replace(/"/g,'&quot;')}" placeholder="e.g. 14 Aug 2026 full battery" style="width:240px;background:var(--card);border:1px solid var(--border);border-radius:6px;padding:5px 8px;color:var(--text);font-size:12px;">
+    <button class="btn" style="font-size:10px;padding:4px 10px;margin-left:6px;" onclick="saveBlueprintDue('${id}')">Save</button>`;
+  document.getElementById('bp-in').focus();
+}
+function saveBlueprintDue(id){
+  const v=document.getElementById('bp-in').value.trim();
+  saveMeta(id,{blueprintDue:v}); ATHLETES[id].blueprintDue=v;
+  renderTesting(ATHLETES[id],id);
+}
+function numOf(v){ const m=String(v).match(/-?\d+(\.\d+)?/); return m?parseFloat(m[0]):null; }
+function testTable(a){
+  const t=a.testing||[];
+  if(!t.length) return '  No testing results on file.';
+  return t.map(r=>{
+    let line='  '+r.n+': '+r.v;
+    if(r.prev&&r.prev!=='first test'){
+      const v=numOf(r.v),p=numOf(r.prev);
+      if(v!==null&&p){ const ch=Math.round((v-p)/p*100); line+=' (was '+r.prev+', '+(ch>0?'up':ch<0?'down':'level')+' '+Math.abs(ch)+'%)'; }
+      else line+=' (was '+r.prev+')';
+    } else line+=' (first test on record)';
+    return line;
+  }).join('\n');
+}
+function regressions(a){
+  return (a.testing||[]).filter(r=>{
+    if(!r.prev||r.prev==='first test') return false;
+    const v=numOf(r.v),p=numOf(r.prev);
+    return v!==null&&p&&(p-v)/p>0.05;
+  });
+}
+function asymLine(a){
+  const t=a.testing||[];
+  const L=t.find(x=>/left max force/i.test(x.n)), R=t.find(x=>/right max force/i.test(x.n));
+  if(!L||!R) return null;
+  const l=numOf(L.v), r=numOf(R.v); if(!l||!r) return null;
+  const lsi=Math.round(Math.min(l,r)/Math.max(l,r)*100);
+  return {lsi:lsi, text:'Hamstring symmetry '+lsi+'% ('+(l<r?'left':'right')+' weaker, '+Math.round(Math.min(l,r))+'N vs '+Math.round(Math.max(l,r))+'N).'};
+}
+function buildDocHTML(title, subtitle, sections){
+  const css = `
+    @page { margin: 18mm; }
+    *{box-sizing:border-box;}
+    body{font-family:'Barlow',Helvetica,Arial,sans-serif;color:#16211f;margin:0;padding:0;font-size:12.5px;line-height:1.65;}
+    .wrap{max-width:820px;margin:0 auto;padding:26px 30px 40px;}
+    .hd{border-bottom:3px solid #00c2a8;padding-bottom:14px;margin-bottom:22px;display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap;}
+    .brand{font-family:'Barlow Condensed',Helvetica,sans-serif;font-weight:900;font-size:13px;letter-spacing:.22em;text-transform:uppercase;color:#00a892;}
+    h1{font-family:'Barlow Condensed',Helvetica,sans-serif;font-weight:900;font-size:31px;text-transform:uppercase;margin:2px 0 0;letter-spacing:.01em;line-height:1;}
+    .sub{font-size:12px;color:#5c6b68;margin-top:5px;}
+    .meta{font-size:10.5px;color:#8a9694;text-align:right;line-height:1.7;}
+    h2{font-family:'Barlow Condensed',Helvetica,sans-serif;font-weight:800;font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:#00a892;margin:26px 0 9px;padding-bottom:5px;border-bottom:1px solid #dfe6e4;}
+    .lead{background:#f4faf9;border-left:3px solid #00c2a8;padding:12px 15px;margin:0 0 6px;border-radius:0 6px 6px 0;}
+    .kv{display:flex;justify-content:space-between;gap:14px;padding:5px 0;border-bottom:1px solid #eef2f1;font-size:12px;}
+    .kv span:first-child{color:#5c6b68;}
+    .kv span:last-child{font-weight:600;text-align:right;}
+    table{width:100%;border-collapse:collapse;margin:4px 0 2px;font-size:11.5px;}
+    th{text-align:left;font-family:'Barlow Condensed',Helvetica,sans-serif;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:#5c6b68;border-bottom:1.5px solid #dfe6e4;padding:6px 8px 5px;}
+    td{padding:6px 8px;border-bottom:1px solid #eef2f1;vertical-align:top;}
+    td.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap;}
+    .up{color:#0a8f5f;font-weight:600;} .down{color:#c8452d;font-weight:600;} .flat{color:#8a9694;}
+    .tag{display:inline-block;font-family:'Barlow Condensed',Helvetica,sans-serif;font-size:9.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:2px 7px;border-radius:20px;border:1px solid;}
+    .t-g{color:#0a8f5f;border-color:#9fdcc2;background:#eefaf4;}
+    .t-r{color:#c8452d;border-color:#f0b8ac;background:#fdf1ee;}
+    .t-a{color:#a5730a;border-color:#f0d79a;background:#fdf7e8;}
+    .t-t{color:#00806f;border-color:#9adcd2;background:#eefaf8;}
+    ol{margin:6px 0 0;padding-left:19px;} ol li{margin-bottom:6px;}
+    .phase{display:flex;gap:5px;margin:8px 0 4px;flex-wrap:wrap;}
+    .ph{flex:1;min-width:78px;border-radius:5px;padding:7px 6px;text-align:center;font-size:9.5px;line-height:1.35;border:1px solid #dfe6e4;}
+    .ph b{display:block;font-family:'Barlow Condensed',Helvetica,sans-serif;font-size:10.5px;text-transform:uppercase;letter-spacing:.04em;}
+    .ph.done{background:#eefaf4;border-color:#9fdcc2;color:#0a8f5f;}
+    .ph.act{background:#00c2a8;border-color:#00c2a8;color:#fff;}
+    .ph.fut{color:#a8b4b2;}
+    .note{font-size:11px;color:#5c6b68;margin-top:5px;}
+    .ft{margin-top:30px;padding-top:12px;border-top:1px solid #dfe6e4;font-size:10px;color:#8a9694;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;}
+    @media print{ .noprint{display:none!important;} body{padding:0;} .wrap{padding:0;} }
+  `;
+  return `<!DOCTYPE html><html><head><meta charset="utf-8"><title>${title}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;600;700&family=Barlow+Condensed:wght@700;800;900&display=swap" rel="stylesheet">
+    <style>${css}</style></head><body><div class="wrap">
+    <div class="hd">
+      <div><div class="brand">Axis Performance</div><h1>${title}</h1><div class="sub">${subtitle}</div></div>
+      <div class="meta">${new Date().toLocaleDateString('en-AU',{day:'numeric',month:'long',year:'numeric'})}<br>Prepared by ${typeof CURRENT_USER!=='undefined'?CURRENT_USER:'Axis Performance'}</div>
+    </div>
+    ${sections}
+    <div class="ft"><span>Axis Performance · Athlete development and performance rehabilitation</span><span>Generated from live training and testing data</span></div>
+    </div></body></html>`;
+}
+function openDoc(html, label){
+  const el=document.getElementById('doc-out');
+  el.style.display='block';
+  el.innerHTML=`<div class="card" style="padding:0;overflow:hidden;">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;padding:10px 12px;border-bottom:1px solid var(--border);flex-wrap:wrap;">
+        <span style="font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--teal);">Document preview</span>
+        <span style="display:flex;gap:8px;">
+          <button class="btn" onclick="printDocFrame()">🖨 Save as PDF / Print</button>
+          <button class="btn ghost" onclick="document.getElementById('doc-out').style.display='none'">Close</button>
+        </span>
+      </div>
+      <iframe id="doc-frame" style="width:100%;height:760px;border:0;background:#000;display:block;"></iframe>
+    </div>`;
+  const f=document.getElementById('doc-frame');
+  const dd=f.contentWindow.document;
+  dd.open(); dd.write(html); dd.close();
+  if(el.scrollIntoView) el.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+function printDocFrame(){
+  const f=document.getElementById('doc-frame');
+  if(!f) return;
+  f.contentWindow.focus();
+  f.contentWindow.print();
+}
+function chgCell(r){
+  const prev=r.prev, v=numOf(r.v), p=numOf(prev);
+  if(!prev||prev==='first test'||v===null||!p) return '<td class="num flat">first test</td>';
+  const ch=(v-p)/p*100;
+  const better = r.dir==='low' ? ch<0 : ch>0;
+  if(Math.abs(ch)<1) return '<td class="num flat">no change</td>';
+  return `<td class="num ${better?'up':'down'}">${ch>0?'+':''}${ch.toFixed(0)}%</td>`;
+}
+function testRowsHTML(a){
+  const t=a.testing||[];
+  if(!t.length) return '<div class="note">No testing results on file.</div>';
+  return `<table><thead><tr><th>Test</th><th>Metric</th><th style="text-align:right;">Latest</th><th style="text-align:right;">Previous</th><th style="text-align:right;">Change</th></tr></thead><tbody>`
+    + t.map(r=>`<tr><td>${r.test||''}</td><td>${r.metric||r.n}</td><td class="num"><strong>${r.v}</strong></td><td class="num flat">${r.prev==='first test'?'—':r.prev}</td>${chgCell(r)}</tr>`).join('')
+    + `</tbody></table>`;
+}
+// ═══════════ ATHLETE BLUEPRINT — branded multi page document ═══════════
+function bpFind(a, test, metric){
+  const rows=(a.testing||[]).filter(t=>(t.test||'')===test && (t.metric||'')===metric);
+  return rows.length?rows[0]:null;
+}
+function bpVal(a, test, metric, dp){
+  const r=bpFind(a,test,metric);
+  if(!r) return null;
+  const n=numOf(r.v);
+  if(n===null) return null;
+  return dp===undefined?n:parseFloat(n.toFixed(dp));
+}
+function bpCell(v, unit, pct){
+  if(v===null||v===undefined||v==='') return '<td class="ed" contenteditable="true">&mdash;</td>';
+  return `<td class="ed" contenteditable="true">${v}${unit||''}${pct?` (${pct}%)`:''}</td>`;
+}
+function bpManual(id, key){
+  const m=metaOf(id).bp||{};
+  return m[key]!==undefined?m[key]:'';
+}
+function buildBlueprint(id){
+  const a=ATHLETES[id];
+  if(!a) return '<html><body style="font-family:sans-serif;padding:20px;">No athlete selected.</body></html>';
+  const year=new Date().getFullYear();
+  const CY='#00b4e6';
+  // ── live values
+  const cmjHt=bpVal(a,'Countermovement Jump','Jump Height (Flight Time)',1);
+  const cmjPw=bpVal(a,'Countermovement Jump','Peak Power / BM',1);
+  const sjHt =bpVal(a,'Squat Jump','Jump Height (Flight Time)',1);
+  const sjPw =bpVal(a,'Squat Jump','Peak Power / BM',1);
+  const bw   =bpVal(a,'Countermovement Jump','Bodyweight in Kilograms',1) || bpVal(a,'Squat Jump','Bodyweight in Kilograms',1);
+  const proneL=bpVal(a,'ISO Prone','Left Max Force',0), proneR=bpVal(a,'ISO Prone','Right Max Force',0);
+  const iso30L=bpVal(a,'ISO 30','Left Max Force',0),    iso30R=bpVal(a,'ISO 30','Right Max Force',0);
+  const nordL =bpVal(a,'Nordic','Left Max Force',0),     nordR=bpVal(a,'Nordic','Right Max Force',0);
+  const slL   =bpVal(a,'Single Leg Jump','Jump Height (Flight Time)',1);
+  const slDL  =bpVal(a,'Single Leg Drop Jump','Jump Height (Flight Time)',1);
+  // derived
+  const vEUR = (cmjHt&&sjHt)?(cmjHt/sjHt).toFixed(2):null;
+  const asym = asymLine(a);
+  // ── key findings suggested from data
+  const finds=[];
+  if(asym&&asym.lsi<90) finds.push(['Hamstring asymmetry',`${asym.text} Below the 90% threshold. Targeted single leg eccentric work is the priority, retest in four weeks.`]);
+  if(vEUR&&parseFloat(vEUR)>1.25) finds.push(['Reliance on the stretch shortening cycle',`Vertical eccentric utilisation ratio of ${vEUR} against a 1.15 norm. Concentric strength is lagging behind elastic ability, so the priority is heavy slow strength work rather than more plyometrics.`]);
+  if(vEUR&&parseFloat(vEUR)<1.05) finds.push(['Limited elastic ability',`Vertical eccentric utilisation ratio of ${vEUR} against a 1.15 norm. Strength is not converting to fast output, so the priority is reactive and plyometric exposure.`]);
+  if(a.sessTotal&&a.sessDone/a.sessTotal<0.7) finds.push(['Training consistency',`${a.sessDone} of ${a.sessTotal} programmed sessions completed in the last fortnight. Physical qualities cannot be developed from a program that is only half completed. This is the first rock.`]);
+  if((a.wellness||[]).filter(v=>v!==null).length<4) finds.push(['Monitoring compliance','Wellness is not being logged consistently, so load cannot be adjusted around fatigue and early warning signs are invisible to the coaching team.']);
+  // data driven fallbacks so the findings are never empty boilerplate
+  const MEANINGLESS=/weight|rep count|reps|calibration|standing|depth|time to max/i;
+  const perf=t=>!MEANINGLESS.test((t.metric||t.n||''));
+  const drops=regressions(a).filter(perf);
+  if(drops.length) finds.push([`Decline in ${drops[0].metricShort||drops[0].metric||drops[0].n}`,`${drops[0].n} has fallen to ${drops[0].v} from ${drops[0].prev}. Confirm with a retest under fresh conditions before changing the program, then target the quality directly if it holds.`]);
+  const gains=(a.testing||[]).filter(t=>t.pb&&perf(t));
+  if(gains.length) finds.push([`Strength to build on: ${gains[0].metricShort||gains[0].metric}`,`${gains[0].n} is at a personal best of ${gains[0].v}. This is a quality that responds well to your current training, so it is worth protecting the work that produced it.`]);
+  if(nordL&&nordR){
+    const nlsi=Math.round(Math.min(nordL,nordR)/Math.max(nordL,nordR)*100);
+    if(nlsi>=90) finds.push(['Hamstring capacity',`Nordic peak force of ${nordL} N left and ${nordR} N right, symmetry ${nlsi}%. This is a solid base. The priority now is holding it through the season rather than chasing more.`]);
+  }
+  if(a.prpLive) finds.push(['Return to performance pathway',`Currently in ${a.prpLive.phaseName}, week ${a.prpLive.weeksTotal} of rehabilitation. Progression is criteria based, so the focus is meeting the exit criteria for this phase rather than working to a date.`]);
+  while(finds.length<3) finds.push(['To be completed with your coach','Click to edit this finding after reviewing the results above.']);
+  const F=finds.slice(0,3);
+
+  const css=`
+    @page{size:A4;margin:0;}
+    *{box-sizing:border-box;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+    body{margin:0;background:#000;color:#fff;font-family:'Barlow',Helvetica,Arial,sans-serif;}
+    .page{width:210mm;min-height:296mm;padding:18mm 16mm 14mm;background:#000;position:relative;page-break-after:always;overflow:hidden;}
+    .page:last-child{page-break-after:auto;}
+    h1{font-family:'Barlow Condensed',Helvetica,sans-serif;font-weight:900;font-size:52px;line-height:.92;text-transform:uppercase;margin:0;letter-spacing:.005em;}
+    h1.cy{color:${CY};}
+    .rule{height:4px;background:${CY};margin:14px 0 20px;width:100%;}
+    h2{font-family:'Barlow Condensed',Helvetica,sans-serif;font-weight:800;font-size:27px;text-transform:none;margin:22px 0 10px;text-align:center;}
+    p{font-size:12.5px;line-height:1.75;}
+    .intro p{text-align:center;margin:0 0 15px;padding:0 6mm;}
+    .lead{font-size:12px;line-height:1.7;text-align:center;padding:0 4mm;color:#f2f2f2;}
+    .num{color:${CY};font-family:'Barlow Condensed',Helvetica,sans-serif;font-weight:800;font-size:19px;margin:16px 0 4px;}
+    .obj{padding-left:22mm;}
+    .obj p{margin:0 0 4px;font-size:12px;line-height:1.7;}
+    table{width:100%;border-collapse:collapse;margin:6px 0 10px;font-size:12px;}
+    th{background:#e6e6e6;color:#000;font-weight:700;padding:9px 8px;border:1px solid #fff;text-align:center;font-size:11.5px;line-height:1.3;}
+    th.blank{background:#8a8a8a;}
+    td{border:1px solid #fff;padding:9px 8px;text-align:center;color:#fff;background:#000;}
+    td.lbl{background:#e6e6e6;color:#000;font-weight:700;}
+    td.ed:focus{outline:2px solid ${CY};background:#0a1a20;}
+    .ft{position:absolute;left:0;right:0;bottom:9mm;text-align:center;color:${CY};font-size:11px;font-weight:600;}
+    .ftrule{position:absolute;left:16mm;right:16mm;bottom:16mm;height:3px;background:${CY};}
+    .cover{display:flex;flex-direction:column;justify-content:flex-start;}
+    .logo{display:inline-flex;align-items:center;gap:10px;background:#1c1c1c;padding:14px 18px;margin-bottom:22px;}
+    .logo .tri{width:34px;height:34px;border:3px solid ${CY};transform:rotate(0deg);clip-path:polygon(50% 0,100% 100%,0 100%);background:${CY};opacity:.85;}
+    .logo .txt{font-family:'Barlow Condensed',Helvetica,sans-serif;font-weight:900;font-size:30px;letter-spacing:.02em;line-height:1;}
+    .logo .sub{font-family:'Barlow Condensed',Helvetica,sans-serif;font-weight:700;font-size:10px;letter-spacing:.34em;color:${CY};}
+    .yr{position:absolute;right:6mm;bottom:2mm;font-family:'Barlow Condensed',Helvetica,sans-serif;font-weight:900;font-size:250px;line-height:.78;color:transparent;-webkit-text-stroke:3px ${CY};text-align:right;opacity:.95;}
+    .who{margin-top:26px;font-size:15px;}
+    .who b{font-family:'Barlow Condensed',Helvetica,sans-serif;font-size:30px;font-weight:800;display:block;text-transform:uppercase;}
+    .find{margin:0 0 20px;padding-left:14mm;}
+    .find .h{color:${CY};font-family:'Barlow Condensed',Helvetica,sans-serif;font-weight:800;font-size:19px;margin-bottom:5px;}
+    .find ul{margin:0;padding-left:16px;} .find li{font-size:12px;line-height:1.7;}
+    @media screen{ body{background:#111;padding:10px;} .page{margin:0 auto 14px;box-shadow:0 4px 20px rgba(0,0,0,.6);} }
+  `;
+  const FT=`<div class="ftrule"></div><div class="ft">Axis Performance Athlete Blueprint - ${year}</div>`;
+
+  // ── PAGE 1 cover
+  let P=`<div class="page cover">
+    <div class="logo"><div class="tri"></div><div><div class="txt">AXIS</div><div class="sub">PERFORMANCE</div></div></div>
+    <h1>Athlete<br>Blueprint</h1>
+    <div class="who">Prepared for<b>${a.name}</b>${(a.groups&&a.groups.length)?`<span style="font-size:12px;color:#bdbdbd;">${a.groups.join(' · ')}</span>`:''}
+      <div style="font-size:12px;color:#bdbdbd;margin-top:8px;">${new Date().toLocaleDateString('en-AU',{day:'numeric',month:'long',year:'numeric'})}</div></div>
+    <div class="yr">${String(year).slice(0,2)}<br>${String(year).slice(2)}</div>
+  </div>`;
+
+  // ── PAGE 2 introduction
+  P+=`<div class="page intro">
+    <h1 class="cy" style="text-align:center;margin:22mm 0 14mm;">Introduction</h1>
+    <p>Do you know what happens when you fail to develop in all areas required to be a high achiever in your sport?</p>
+    <p>You either fall short or become injured when you overextend yourself beyond your current abilities.</p>
+    <p>There is a simple solution.</p>
+    <p>You must know where you are now so that you can learn what you need to do to get to where you want to be.</p>
+    <p>You must know what your body is capable of now so that you can develop your weaknesses into strengths and unlock an entirely new level of athleticism to master your performance.</p>
+    <p>The Athlete Blueprint is our performance testing method for determining your individual performance profile, based on biomechanics and sports science technology.</p>
+    <p>Identifying how to maximise your potential, and uncovering the missed elements holding you back from peak performance, is what unlocks your fullest athletic potential.</p>
+    <p>The Athlete Blueprint provides an insight into your performance as you have never seen before, and allows us to build the blueprint of your path to success.</p>
+    ${FT}</div>`;
+
+  // ── PAGE 3 priority outcomes
+  P+=`<div class="page">
+    <h1>Priority<br>Outcomes</h1><div class="rule"></div>
+    <p style="font-size:12px;">Athlete performance testing offers a systematic approach to assess and understand your current capabilities and areas of improvement. These are the central objectives of this testing:</p>
+    <div class="obj">
+      <div class="num">01 &mdash; Improved Availability</div>
+      <p>Injuries are part of sport, but their frequency and severity vary. One of the primary purposes of performance testing is to evaluate your physical condition and highlight potential vulnerabilities. Addressing these early reduces injury risk and keeps you available for training and competition.</p>
+      <div class="num">02 &mdash; Improved Performance</div>
+      <p>Performance depends on many qualities, from endurance and strength to agility and speed. Testing gives a detailed assessment of these metrics so training can be tailored, maximising strengths and addressing weaknesses.</p>
+      <div class="num">03 &mdash; Clarity</div>
+      <p>Understanding where you are now is vital, but knowing what to do next matters just as much. Testing provides a data backed foundation and shows exactly which areas need focus, so effort goes where it counts.</p>
+    </div>${FT}</div>`;
+
+  const BLURB=`<p class="lead">The tables below present results from your recent testing session. These metrics provide insight into your outputs across the tests completed, shown against target norms in brackets as a percentile.</p>`;
+
+  // ── PAGE 4 horizontal + lateral power
+  const mb=k=>bpManual(id,k);
+  P+=`<div class="page">
+    <h1>Testing Results -<br>Outcomes</h1><div class="rule"></div>${BLURB}
+    <h2>Horizontal + Lateral Power Assessment</h2>
+    <table><tr><th class="blank"></th><th>Distance (cm) - Left</th><th>Distance (cm) - Right</th></tr>
+      <tr><td class="lbl">SL Broad Jump</td>${bpCell(mb('sbjL')||null)}${bpCell(mb('sbjR')||null)}</tr>
+      <tr><td class="lbl">SL Triple Broad Jump</td>${bpCell(mb('stbjL')||null)}${bpCell(mb('stbjR')||null)}</tr>
+      <tr><td class="lbl">SL Lateral Hop</td>${bpCell(mb('slhL')||null)}${bpCell(mb('slhR')||null)}</tr>
+    </table>
+    <p style="font-size:10.5px;color:#9a9a9a;text-align:center;">Field tests are entered by your coach. Click any cell to edit before printing.</p>
+    ${FT}</div>`;
+
+  // ── PAGE 5 jump + SLRH
+  P+=`<div class="page">
+    <h1>Testing Results -<br>Outcomes</h1><div class="rule"></div>${BLURB}
+    <h2>Jump Assessment</h2>
+    <table><tr><th class="blank"></th><th>Jump Height (cm)</th><th>Peak Force (N)</th><th>Peak Power/BM (W/kg)</th><th>Concentric RFD (N/s)</th><th>Eccentric RFD (N/s)</th></tr>
+      <tr><td class="lbl">Squat Jump</td>${bpCell(sjHt)}${bpCell(mb('sjPF')||null)}${bpCell(sjPw)}${bpCell(mb('sjCRFD')||null)}<td class="ed" contenteditable="true">&mdash;</td></tr>
+      <tr><td class="lbl">Countermovement Jump</td>${bpCell(cmjHt)}${bpCell(mb('cmjPF')||null)}${bpCell(cmjPw)}${bpCell(mb('cmjCRFD')||null)}${bpCell(mb('cmjERFD')||null)}</tr>
+    </table>
+    <h2>SL Repeat Hop (SLRH) Assessment</h2>
+    <table><tr><th class="blank"></th><th>Jump Height (cm)</th><th>RSI (Jump Height / Contact Time)</th></tr>
+      <tr><td class="lbl">SLRH - Left</td>${bpCell(slL||slDL)}${bpCell(mb('rsiL')||null)}</tr>
+      <tr><td class="lbl">SLRH - Right</td>${bpCell(mb('slrhR')||null)}${bpCell(mb('rsiR')||null)}</tr>
+    </table>${FT}</div>`;
+
+  // ── PAGE 6 IMTP + hamstring
+  P+=`<div class="page">
+    <h1>Testing Results -<br>Outcomes</h1><div class="rule"></div>${BLURB}
+    <h2>Isometric Mid-Thigh Pull (IMTP)</h2>
+    <table><tr><th>Absolute Force (N)</th><th>Relative Force (N/kg)</th><th>RFD @ 200ms (N/s)</th></tr>
+      <tr>${bpCell(mb('imtpAbs')||null)}${bpCell(mb('imtpRel')||null)}${bpCell(mb('imtpRFD')||null)}</tr>
+    </table>
+    <h2>Hamstring Assessment</h2>
+    <table><tr><th class="blank"></th><th>Peak Force - Left (N)</th><th>Peak Force - Right (N)</th></tr>
+      <tr><td class="lbl">Prone</td>${bpCell(proneL)}${bpCell(proneR)}</tr>
+      <tr><td class="lbl">Iso 30</td>${bpCell(iso30L)}${bpCell(iso30R)}</tr>
+      <tr><td class="lbl">Nordic</td>${bpCell(nordL)}${bpCell(nordR)}</tr>
+    </table>
+    ${(nordL&&nordR)?`<p style="font-size:11px;color:#cfcfcf;text-align:center;">Nordic symmetry ${Math.round(Math.min(nordL,nordR)/Math.max(nordL,nordR)*100)}%. Target is above 90%.</p>`:''}
+    ${FT}</div>`;
+
+  // ── PAGE 7 performance measures
+  const rsiTxt = (mb('rsiL')||mb('rsiR'))?`L = ${mb('rsiL')||'—'}, R = ${mb('rsiR')||'—'}`:null;
+  P+=`<div class="page">
+    <h1>Testing Results -<br>Performance</h1><div class="rule"></div>
+    <p class="lead">These metrics give deeper insight into your performance, and are what our performance team uses to determine the right mix of programming for you. Results are shown against target norms.</p>
+    <table style="margin-top:18px;">
+      <tr><th style="text-align:left;">Performance Outcome Measure</th><th>Result</th><th>Norm Target</th></tr>
+      <tr><td class="lbl" style="text-align:left;">Vertical Eccentric Utilisation Ratio</td>${bpCell(vEUR)}<td>1.15</td></tr>
+      <tr><td class="lbl" style="text-align:left;">Horizontal Eccentric Utilisation Ratio</td>${bpCell(mb('hEUR')||null)}<td>1.15</td></tr>
+      <tr><td class="lbl" style="text-align:left;">Reactive Strength Index (Jump Height / Contact Time)</td>${bpCell(rsiTxt)}<td>0.38</td></tr>
+      <tr><td class="lbl" style="text-align:left;">Dynamic Strength Index</td>${bpCell(mb('dsi')||null)}<td>0.6 - 0.8</td></tr>
+      <tr><td class="lbl" style="text-align:left;">Relative IMTP</td>${bpCell(mb('imtpRel')?mb('imtpRel')+' N/kg':null)}<td>&gt; 40 N/kg</td></tr>
+    </table>
+    ${vEUR?`<p style="font-size:11px;color:#cfcfcf;text-align:center;margin-top:14px;">Vertical eccentric utilisation ratio calculated from your countermovement jump (${cmjHt} cm) against your squat jump (${sjHt} cm).</p>`:''}
+    ${FT}</div>`;
+
+  // ── PAGE 8 key findings
+  P+=`<div class="page">
+    <h1>Key Findings</h1><div class="rule"></div>
+    <p style="font-size:12px;">Where do you go from here? The objective of testing is to determine the key areas of your athletic profile that, if addressed, will make the biggest impact on your performance.</p>
+    <p style="font-size:12px;">These three key areas have been identified as your big rocks. Improvement across these areas will lift your athletic profile as a whole.</p>
+    ${F.map((f,i)=>`<div class="find"><div class="h" contenteditable="true">0${i+1} &mdash; ${f[0]}</div><ul><li contenteditable="true">${f[1]}</li></ul></div>`).join('')}
+    ${FT}</div>`;
+
+  return `<!DOCTYPE html><html><head><meta charset="utf-8"><title>Athlete Blueprint - ${a.name}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;600;700&family=Barlow+Condensed:wght@700;800;900&display=swap" rel="stylesheet">
+    <style>${css}</style></head><body>${P}</body></html>`;
+}
+function genBlueprint(id){
+  openDoc(buildBlueprint(id), 'blueprint');
+}
+
+function genBlockUpdate(id){
+  const a=ATHLETES[id], adp=a.adp, regs=regressions(a), asym=asymLine(a);
+  let S='';
+  if(adp&&adp.blocks){
+    const cur=Math.min(adp.current,adp.blocks.length-1), b=adp.blocks[cur];
+    S+=`<h2>Block</h2><div class="phase">`
+      + adp.blocks.map((bl,i)=>`<div class="ph ${bl.completedAt?'done':i===adp.current?'act':'fut'}"><b>B${bl.n}</b>${bl.completedAt?'done':i===adp.current?'current':''}</div>`).join('')
+      + `</div><div class="kv"><span>Cycle ${adp.cycle} · Block ${b.n} of 8</span><span>${b.completedAt?'completed '+b.completedAt:'in progress'}</span></div><div class="note">${b.d}</div>`;
+    const f=b.focuses||[];
+    if(f.length){
+      const met=f.filter(x=>x.met===true).length;
+      S+=`<h2>Block focuses (${met} of ${f.length} met)</h2><table><tbody>`
+        + f.map(x=>`<tr><td>${x.t}</td><td class="num"><span class="tag ${x.met===true?'t-g':x.met===false?'t-r':'t-a'}">${x.met===true?'Met':x.met===false?'Missed':'Open'}</span></td></tr>`).join('')
+        + `</tbody></table>`;
+    }
+  } else {
+    S+=`<h2>Block</h2><div class="note">No block structure set for this athlete yet.</div>`;
+  }
+  S+=`<h2>Testing — newest versus previous</h2>${testRowsHTML(a)}${asym?`<div class="note"><strong>Symmetry:</strong> ${asym.text}</div>`:''}`;
+  S+=`<h2>Regressions</h2>`;
+  S+= regs.length
+    ? `<table><thead><tr><th>Metric</th><th style="text-align:right;">Latest</th><th style="text-align:right;">Previous</th></tr></thead><tbody>`
+      + regs.map(r=>`<tr><td>${r.n}</td><td class="num down">${r.v}</td><td class="num flat">${r.prev}</td></tr>`).join('')
+      + `</tbody></table><div class="note">Check training load and wellness before changing the program. On a single test day, fatigue and lost fitness look identical.</div>`
+    : `<div class="note">Nothing regressed beyond the 5% threshold this block.</div>`;
+  S+=`<h2>Consistency</h2>
+    <div class="kv"><span>Programmed sessions completed (14 days)</span><span>${a.sessTotal?a.sessDone+' of '+a.sessTotal+' ('+Math.round(100*a.sessDone/a.sessTotal)+'%)':'None recorded'}</span></div>
+    <div class="kv"><span>Wellness logged this week</span><span>${(a.wellness||[]).filter(v=>v!==null).length} of 7 days</span></div>`;
+  const rec=[];
+  if(regs.length) rec.push('Hold intensity and rebuild the regressed qualities before adding new stress.');
+  if(asym&&asym.lsi<90) rec.push('Carry a single leg focus into the next block until symmetry is above 90%.');
+  if(a.sessTotal&&a.sessDone/a.sessTotal<0.7) rec.push('Consistency is the limiting factor, not programming. Agree a realistic weekly minimum with the athlete before the next block begins.');
+  if(!rec.length) rec.push('Progress the block as planned and set the next three focuses with the athlete.');
+  S+=`<h2>Next block recommendation</h2><ol>${rec.map(r=>`<li>${r}</li>`).join('')}</ol>`;
+  openDoc(buildDocHTML('Block Update', a.name, S), 'block');
+}
+
+function renderTesting(a, id){ id = id || currentAthlete;
+  const chg=t=>{
+    const v=numOf(t.v), p=numOf(t.prev);
+    if(!t.prev||t.prev==='first test'||v===null||!p) return '<span style="font-size:11px;color:var(--muted);">first</span>';
+    const c=(v-p)/p*100;
+    if(Math.abs(c)<1) return '<span style="font-size:11px;color:var(--muted);">—</span>';
+    const better = t.dir==='low' ? c<0 : c>0;
+    return `<span style="font-size:11px;font-weight:700;color:${better?'var(--green)':'var(--red)'};">${c>0?'+':''}${c.toFixed(0)}%</span>`;
+  };
+  const all=a.testing||[];
+  const types=[...new Set(all.map(t=>t.test||'Test'))];
+  if(typeof window.__testFilter==='undefined'||!types.includes(window.__testFilter)) window.__testFilter=types[0]||'';
+  const shown=all.filter(t=>(t.test||'Test')===window.__testFilter);
+  const rows = shown.map(t=>`
+    <div class="tst-row">
+      <span class="tst-name" style="flex:1;width:auto;">${t.metricShort||t.metric||t.n}</span>
+      <span class="tst-val ${t.st}" style="width:90px;text-align:right;">${t.v}</span>
+      <span class="tst-prev" style="width:90px;text-align:right;">${t.prev==='first test'?'—':t.prev}</span>
+      <span style="width:56px;text-align:right;">${chg(t)}</span>
+      <span class="tst-pb" style="width:60px;text-align:right;">${t.pb?'<span class="pill p-t">PB</span>':''}</span>
+    </div>`).join('');
+  const selector = types.length?`
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:8px;">
+      <select onchange="window.__testFilter=this.value;renderTesting(ATHLETES['${id}'],'${id}')" style="background:var(--card);border:1px solid var(--border);border-radius:8px;padding:8px 12px;color:var(--text);font-size:13px;min-width:220px;">
+        ${types.map(t=>`<option value="${t.replace(/"/g,'&quot;')}" ${t===window.__testFilter?'selected':''}>${t} (${all.filter(x=>(x.test||'Test')===t).length})</option>`).join('')}
+      </select>
+      <span style="font-size:11px;color:var(--muted);">${types.length} test type${types.length>1?'s':''} on file</span>
+    </div>
+    <div class="tst-row" style="border:0;opacity:.6;">
+      <span class="tst-name" style="flex:1;width:auto;font-size:10px;letter-spacing:.08em;text-transform:uppercase;">Metric</span>
+      <span style="width:90px;text-align:right;font-size:10px;letter-spacing:.08em;text-transform:uppercase;">Latest</span>
+      <span style="width:90px;text-align:right;font-size:10px;letter-spacing:.08em;text-transform:uppercase;">Previous</span>
+      <span style="width:56px;text-align:right;font-size:10px;letter-spacing:.08em;text-transform:uppercase;">Change</span>
+      <span style="width:60px;"></span>
+    </div>`:'';
+  document.getElementById('pf-testing').innerHTML = `
+    <div class="card" style="border-left:3px solid var(--amber);">
+      <div style="font-size:12px;color:var(--mid);"><strong style="color:var(--amber);">Next testing:</strong> <span id="bp-due">${a.blueprintDue||'not scheduled'}</span> <button class="btn ghost" style="font-size:10px;padding:3px 9px;margin-left:6px;" onclick="editBlueprintDue('${id}')">✎ Set</button></div>
+    </div>
+    <div class="card">
+      <div class="sec" style="margin-top:0;">Test results — select a test to view its metrics</div>
+      ${selector}
+      ${rows||'<div style="font-size:12px;color:var(--muted);padding:8px 0;">No results on file.</div>'}
+    </div>
+    <div class="grid2">
+      <div class="card">
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:800;text-transform:uppercase;margin-bottom:6px;">📘 Generate Blueprint</div>
+        <div style="font-size:11px;color:var(--mid);line-height:1.6;margin-bottom:10px;">Formatted, printable athlete document: goal, snapshot, full testing battery with changes, VALD history, rehab phase and criteria, training block, and priorities. Opens ready to save as PDF.</div>
+        <button class="btn" onclick="genBlueprint('${id}')">⚡ Generate blueprint</button>
+      </div>
+      <div class="card">
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:800;text-transform:uppercase;margin-bottom:6px;">📊 Generate Block Update</div>
+        <div style="font-size:11px;color:var(--mid);line-height:1.6;margin-bottom:10px;">Formatted post-block report: block focuses met or missed, newest versus previous testing, regressions flagged, consistency, and a next block recommendation. Opens ready to save as PDF.</div>
+        <button class="btn" onclick="genBlockUpdate('${id}')">⚡ Generate block update</button>
+      </div>
+    </div>
+    <div id="doc-out" style="display:none;margin-top:12px;"></div>` + valdPanel(a);
+}
+const MEAL_QUESTIONNAIRE_TEMPLATE = `SECTION A — ABOUT YOU
+Name:  | Age:  | Height: cm | Weight: kg (morning) | Sex:
+
+SECTION B — TRAINING WEEK
+Axis S&C:  min, x/week, intensity /10
+Club/sport training:  min, x/week, intensity /10
+Game:  min, x/week, intensity /10
+Day job / school: (desk based / on feet some / physical)
+
+SECTION C — GOAL
+(build muscle / lean gain / performance cut / recomp / maintain). Timeframe/event:
+
+SECTION D — CURRENT EATING
+Walk me through yesterday, meal by meal, including the stuff you think you should not mention. That is the useful part. Water intake: L. Skip any meals?
+
+SECTION E — FOODS
+Allergies:  | Refuses (hard no):  | Dislikes (will tolerate):
+
+SECTION F — TRAINING & GAMES
+Cramping (when/where):  | Energy wall (when):  | Day after a hard session:
+
+SECTION G — SLEEP & SUPPLEMENTS
+Hours:  | Quality:  | Bed/wake:  | Current supplements:
+
+SECTION H — LOGISTICS
+Who cooks:  | Budget:  | Food storage at school/work:  | Training night timing:`;
+
+function renderMeals(a,id){
+  const el=document.getElementById('pf-meals');
+  const hasQ = a.mealQ && a.mealQ.trim().length>40;
+  el.innerHTML = `
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px;">
+        <div style="font-size:12px;color:var(--mid);line-height:1.6;"><strong style="color:var(--text);">Nutrition questionnaire.</strong> ${hasQ?a.name.split(' ')[0]+"'s responses are below.":"Paste "+a.name.split(' ')[0]+"'s completed questionnaire below, or copy the blank to send them first."} The engine runs the full Axis TDEE methodology and builds a 7-day plan around their real week.</div>
+        <button class="btn ghost" style="font-size:11px;white-space:nowrap;" onclick="copyBlankQuestionnaire(this)">📋 Copy blank questionnaire</button>
+      </div>
+      <textarea id="meal-in" placeholder="Paste the 8-section questionnaire responses here (Sections A to H)..." style="width:100%;box-sizing:border-box;min-height:220px;background:var(--card);border:1px solid var(--border);border-radius:8px;padding:12px;color:var(--text);font-size:12px;line-height:1.6;font-family:Barlow,sans-serif;">${hasQ?a.mealQ.replace(/</g,'&lt;'):''}</textarea>
+      <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;align-items:center;">
+        <button class="btn" id="meal-btn" onclick="genMeal('${id}')">⚡ Build meal plan</button>
+        <button class="btn ghost" onclick="saveQuestionnaire('${id}')">💾 Save responses</button>
+        <span id="meal-status" style="font-size:12px;color:var(--muted);"></span>
+      </div>
+      <div style="font-size:10.5px;color:var(--muted);margin-top:8px;line-height:1.5;"><strong style="color:var(--amber);">Dietitian signs off before any plan reaches an athlete. Mandatory for juniors.</strong></div>
+    </div>
+    <div id="meal-out" style="display:none;">
+      <div class="card">
+        <div class="sec" style="margin-top:0;">Athlete snapshot & TDEE</div>
+        <div id="meal-tags" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;"></div>
+        <div id="meal-tdee" style="font-size:12px;color:var(--mid);line-height:1.7;"></div>
+      </div>
+      <div class="card" style="border-left:3px solid var(--teal);">
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--teal);margin-bottom:8px;">The Straight Read</div>
+        <div id="meal-rationale" style="font-size:13px;line-height:1.7;white-space:pre-wrap;"></div>
+      </div>
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
+          <div class="sec" style="margin-top:0;">7-Day Plan</div>
+          <button class="btn ghost" style="font-size:10px;" onclick="printMealPlan('${id}')">🖨 Print / save PDF</button>
+        </div>
+        <div class="day-tabs" id="meal-days"></div>
+        <div id="meal-meals"></div>
+      </div>
+    </div>`;
+}
+function copyBlankQuestionnaire(btn){
+  navigator.clipboard.writeText(MEAL_QUESTIONNAIRE_TEMPLATE).then(()=>{
+    const t=btn.textContent; btn.textContent='✓ Copied'; setTimeout(()=>btn.textContent=t,1500);
+  });
+}
+function saveQuestionnaire(id){
+  const val=document.getElementById('meal-in').value.trim();
+  ATHLETES[id].mealQ=val;
+  saveMeta(id,{mealQ:val});
+  const st=document.getElementById('meal-status');
+  st.textContent='Saved.'; setTimeout(()=>st.textContent='',1500);
+}
+
+function renderGoals(a){
+  const goals = a.goals.map(g=>{
+    const ms = g.ms.map(m=>{
+      const dot = m.s==='done'?'background:var(--green-dim);color:var(--green)':m.s==='next'?'background:var(--amber-dim);color:var(--amber)':'background:var(--border);color:var(--muted)';
+      const ic = m.s==='done'?'✓':m.s==='next'?'→':'·';
+      return `<div class="ms"><div class="ms-dot" style="${dot}">${ic}</div>${m.t}</div>`;
+    }).join('');
+    return `<div class="goal-card ${g.link.includes('check-in')?'':''}" ${g.pct===0?'style="border-left:3px solid var(--purple);"':''}>
+      <div class="goal-head"><span class="goal-t">${g.t}</span><span class="pill ${g.pill}">${g.pl}</span></div>
+      <div class="goal-meta"><span>📅 ${g.date.startsWith('Review')?g.date:'Target: '+g.date}</span><span>📈 Linked: ${g.link}</span>${g.cur?`<span>Current: ${g.cur}</span>`:''}</div>
+      ${g.pct>0?`<div class="gbar"><div class="gfill" style="width:${g.pct}%;background:${g.col}"></div></div>`:''}
+      <div style="font-size:11px;color:var(--muted);margin-top:4px;line-height:1.5;">${g.note}</div>
+      ${ms?`<div style="margin-top:8px;">${ms}</div>`:''}
+    </div>`;
+  }).join('');
+  document.getElementById('pf-goals').innerHTML = `
+    <div class="bsg">
+      <div style="font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--teal);margin-bottom:6px;">★ Big Scary Goal</div>
+      <div style="font-family:'Barlow Condensed',sans-serif;font-size:24px;font-weight:900;text-transform:uppercase;line-height:1.1;">${a.bsg} — <span style="color:var(--teal);">${a.bsgDate}</span></div>
+      <div style="display:flex;gap:14px;font-size:11px;color:var(--mid);margin-top:8px;flex-wrap:wrap;align-items:center;">
+        <span>${a.bsgDays} days remaining</span><span class="pill ${a.bsgPill}">${a.bsgStatus}</span>
+      </div>
+    </div>
+    ${goals}
+    <button class="btn ghost" onclick="alert('Goal creation form — next build phase. Fields: goal, target date, linked metric (auto-updates from VALD/Lumin), milestones with dates.')">+ Add goal</button>`;
+}
+
+// ═══════════ AI ═══════════
+async function genWeekly(){
+  const a = ATHLETES[currentAthlete];
+  const b = document.getElementById('wk-btn'), o = document.getElementById('wk-out');
+  b.disabled=true;b.textContent='⏳ Writing...';o.className='idle';o.textContent='Writing the brief from this week\'s data...';
+  try{
+    const res = await fetch("https://api.anthropic.com/v1/messages",{
+      method:"POST",headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({model:"claude-sonnet-4-6",max_tokens:1500,messages:[{role:"user",content:a.weeklyPrompt}]})
+    });
+    const data = await res.json();
+    o.className='ai-out';
+    o.textContent = data.content?.filter(x=>x.type==="text").map(x=>x.text).join("")||"Unable to generate.";
+    showSendToQueue(a);
+  }catch{o.textContent='Connection error — try again.';}
+  b.disabled=false;b.textContent='⚡ Regenerate';
+}
+function showSendToQueue(a){
+  if(document.getElementById('send-queue-btn')) return;
+  const btn = document.createElement('button');
+  btn.id='send-queue-btn'; btn.className='btn'; btn.style.marginTop='10px';
+  btn.textContent='→ Send to approvals queue';
+  btn.onclick=function(){
+    const draft = document.getElementById('wk-out').textContent;
+    const kind = a.prog==='PRP' ? 'clinical' : 'brief';
+    const owner = a.prog==='PRP' ? 'Luke T.' : (a.sub.includes('Jess')?'Jess M.':'Ben R.');
+    const existing = QUEUE.find(q=>q.athlete===Object.keys(ATHLETES).find(k=>ATHLETES[k]===a) && (q.kind==='brief'||q.kind==='clinical'));
+    if(existing){ existing.draft=draft; existing.status='pending'; existing.edited=false; btn.textContent='✓ Updated in queue'; }
+    else {
+      QUEUE.push({id:'q-live-'+Date.now(), kind:kind, athlete:Object.keys(ATHLETES).find(k=>ATHLETES[k]===a), name:a.name, meta:(kind==='clinical'?'Clinical rehab brief':'Weekly brief')+' · '+a.comp+'% data', owner:owner, deliver:'Lumin chat → '+a.name.split(' ')[0], status:'pending', edited:false, draft:draft});
+      btn.textContent='✓ Sent to queue';
+    }
+    updateApprovalCounts();
+    setTimeout(()=>{btn.textContent='→ Send to approvals queue';},2000);
+  };
+  document.getElementById('wk-out').parentElement.appendChild(btn);
+}
+let mealPlan=null;
+async function genMeal(id){
+  id = id || currentAthlete;
+  const input=document.getElementById('meal-in').value.trim();
+  ATHLETES[id].mealQ=input; saveMeta(id,{mealQ:input});
+  const st=document.getElementById('meal-status');
+  if(input.length<50){st.textContent='Questionnaire responses needed first.';return;}
+  const b=document.getElementById('meal-btn');
+  b.disabled=true;b.textContent='⏳ Building...';st.textContent='Running TDEE methodology and building the 7-day plan... (~30 seconds)';
+  const sys=`You are an expert sports performance nutritionist at Axis Performance. Build a personalised 7-day meal plan from the athlete's 8-section questionnaire (A: profile, B: training week + day job NEAT, C: goal, D: current eating, E: exclusions, F: symptoms, G: sleep, H: logistics).
+
+METHODOLOGY — run these numbers exactly:
+- BMR Mifflin-St Jeor: male 10w+6.25h-5a+5, female 10w+6.25h-5a-161
+- Session burn: MET × weight(kg) × hours per session, summed weekly, ÷7. METs: strength ~5.0, hard field sport ~8.0, moderate ~6.0, light ~4.5
+- NEAT: 20% BMR desk / 30% on-feet-some / 40% physical job
+- TEF: 10% of (BMR + session + NEAT). TDEE = sum.
+- Goal modifiers: recomp +0-200 | lean gain +300-500 | performance cut -200-300 | maintain 0
+- Macros: protein 2.0-2.2g/kg FIRST, fats 25% kcal, carbs remainder. Carbs +10% training days / -10% rest days. Protein never drops on rest days.
+- Philosophy: fuel first. Keep and redirect existing habits, never ban. Hard exclusions from allergies; refused foods substituted or hidden per the athlete's answer. Cramping → electrolytes + intra carbs. Energy wall → pre/intra fuelling. Skipped breakfast → liquid option first.
+- Voice: direct coach, no consultant-speak. Name the real problem in the rationale.
+
+Return ONLY valid JSON, no fences:
+{"athleteSnapshot":["max 6 short tags"],
+"tdee":{"bmr":0,"sessionBurn":0,"neat":0,"tef":0,"total":0,"modifier":"+300 lean gain","target":"3100-3300 kcal"},
+"rationale":"2-3 direct paragraphs naming the real problem and what this plan fixes",
+"days":[{"day":"Monday","isTrainingDay":true,"meals":[{"type":"Breakfast","time":"6:15 AM","items":"exact foods with gram/ml measurements","note":"coaching note or null","macros":{"protein":"38g","carbs":"62g","fats":"16g","kcal":"540"}}]}]}
+Every day: Breakfast, Mid-morning, Lunch, Pre-training or Afternoon snack, Dinner, Evening/recovery. Exact measurements every meal.`;
+  try{
+    const res=await fetch("https://api.anthropic.com/v1/messages",{
+      method:"POST",headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({model:"claude-sonnet-4-6",max_tokens:8000,system:sys,messages:[{role:"user",content:"Athlete questionnaire:\n\n"+input}]})
+    });
+    const data=await res.json();
+    const raw=data.content?.filter(x=>x.type==="text").map(x=>x.text).join("")||"";
+    mealPlan=JSON.parse(raw.replace(/```json|```/g,'').trim());
+    document.getElementById('meal-out').style.display='block';
+    document.getElementById('meal-tags').innerHTML=mealPlan.athleteSnapshot.map(t=>`<span class="pill p-t">${t}</span>`).join('');
+    const td=mealPlan.tdee||{};
+    document.getElementById('meal-tdee').innerHTML=`BMR <strong style="color:var(--text)">${td.bmr}</strong> + sessions <strong style="color:var(--text)">${td.sessionBurn}</strong> + NEAT <strong style="color:var(--text)">${td.neat}</strong> + TEF <strong style="color:var(--text)">${td.tef}</strong> = TDEE <strong style="color:var(--teal)">${td.total} kcal</strong> &nbsp;·&nbsp; ${td.modifier} &nbsp;·&nbsp; Target: <strong style="color:var(--teal)">${td.target}</strong>`;
+    document.getElementById('meal-rationale').textContent=mealPlan.rationale;
+    document.getElementById('meal-days').innerHTML=mealPlan.days.map((d,i)=>`<button class="dtab ${d.isTrainingDay?'training':''} ${i===0?'active':''}" onclick="showMealDay(${i})">${d.day}${d.isTrainingDay?' 🏋':''}</button>`).join('');
+    showMealDay(0);
+    st.textContent='';
+    ATHLETES[id].mealPlan=mealPlan; saveMeta(id,{mealPlan:mealPlan});
+  }catch(e){st.textContent='Generation hiccup — hit Build again. (Long plans occasionally need a second run.)';}
+  b.disabled=false;b.textContent='⚡ Build meal plan';
+}
+// ═══════════ REFERRAL REPORTS ═══════════
+const REFERRALS = {};
+async function genReferral(stream, key){
+  const cfg = REFERRALS[stream][key];
+  const btn = document.getElementById(cfg.btn);
+  const box = document.getElementById('out-'+stream);
+  const txt = document.getElementById('txt-'+stream);
+  btn.disabled=true; btn.textContent='⏳ Writing...';
+  box.style.display='block';
+  txt.textContent='Writing the referral report...';
+  try{
+    const res = await fetch("https://api.anthropic.com/v1/messages",{
+      method:"POST",headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({model:"claude-sonnet-4-6",max_tokens:1800,messages:[{role:"user",content:cfg.prompt}]})
+    });
+    const data = await res.json();
+    txt.textContent = data.content?.filter(x=>x.type==="text").map(x=>x.text).join("")||"Unable to generate.";
+  }catch{txt.textContent='Connection error — try again.';}
+  btn.disabled=false; btn.textContent='⚡ Regenerate';
+}
+function printMealPlan(id){
+  if(!mealPlan) return;
+  const a=ATHLETES[id];
+  const td=mealPlan.tdee||{};
+  const dayHtml=mealPlan.days.map(d=>`
+    <h2 style="page-break-before:always;">${d.day}${d.isTrainingDay?' (training day)':''}</h2>
+    ${d.meals.map(m=>`<div style="margin:0 0 10px;padding:10px 12px;border:1px solid #ddd;border-radius:6px;">
+      <div style="display:flex;justify-content:space-between;font-weight:700;font-size:12px;"><span>${m.type}</span><span style="color:#888;">${m.time}</span></div>
+      <div style="font-size:12px;margin:4px 0;">${m.items}</div>
+      ${m.note&&m.note!=='null'?`<div style="font-size:11px;color:#0a8f5f;font-style:italic;">${m.note}</div>`:''}
+      <div style="font-size:11px;color:#666;margin-top:4px;">P ${m.macros.protein} · C ${m.macros.carbs} · F ${m.macros.fats} · ${m.macros.kcal} kcal</div>
+    </div>`).join('')}`).join('');
+  const html=`<!DOCTYPE html><html><head><meta charset="utf-8"><title>Meal Plan - ${a.name}</title>
+    <style>body{font-family:Helvetica,Arial,sans-serif;color:#111;max-width:800px;margin:0 auto;padding:30px;font-size:13px;line-height:1.6;}
+    h1{font-size:26px;margin:0;}h2{font-size:17px;color:#00806f;border-bottom:2px solid #00c2a8;padding-bottom:4px;margin:20px 0 10px;}
+    .head{border-bottom:3px solid #00c2a8;padding-bottom:12px;margin-bottom:16px;}
+    .tdee{background:#f4faf9;border-radius:6px;padding:12px;font-size:12px;margin:12px 0;}
+    @page{margin:16mm;} h2:first-of-type{page-break-before:auto;}</style></head><body>
+    <div class="head"><div style="font-family:sans-serif;font-weight:800;letter-spacing:.2em;color:#00a892;font-size:12px;">AXIS PERFORMANCE</div>
+    <h1>Meal Plan</h1><div style="color:#666;">${a.name} · ${new Date().toLocaleDateString('en-AU',{day:'numeric',month:'long',year:'numeric'})}</div></div>
+    <div class="tdee"><strong>TDEE:</strong> BMR ${td.bmr} + sessions ${td.sessionBurn} + NEAT ${td.neat} + TEF ${td.tef} = ${td.total} kcal · ${td.modifier} · Target ${td.target}</div>
+    <div style="font-size:12px;white-space:pre-wrap;margin-bottom:10px;">${(mealPlan.rationale||'').replace(/</g,'&lt;')}</div>
+    ${dayHtml}
+    <div style="margin-top:24px;padding-top:10px;border-top:1px solid #ddd;font-size:10px;color:#999;">Axis Performance · Reviewed and signed off by the Axis dietitian before delivery.</div>
+    </body></html>`;
+  const el=document.getElementById('meal-out');
+  let frame=document.getElementById('meal-print-frame');
+  if(!frame){ frame=document.createElement('iframe'); frame.id='meal-print-frame'; frame.style.cssText='width:100%;height:600px;border:1px solid var(--border);border-radius:8px;margin-top:10px;background:#fff;'; el.appendChild(frame); }
+  const dd=frame.contentWindow.document; dd.open(); dd.write(html); dd.close();
+  setTimeout(()=>{ frame.contentWindow.focus(); frame.contentWindow.print(); },300);
+}
+function showMealDay(i){
+  document.querySelectorAll('#meal-days .dtab').forEach((t,x)=>t.classList.toggle('active',x===i));
+  const d=mealPlan.days[i];
+  document.getElementById('meal-meals').innerHTML=d.meals.map(m=>`
+    <div class="meal">
+      <div class="meal-h"><span>${m.type}</span><span>${m.time}</span></div>
+      <div class="meal-i">${m.items}</div>
+      ${m.note&&m.note!=='null'?`<div class="meal-n">${m.note}</div>`:''}
+      <div class="macros"><span class="mp">P ${m.macros.protein}</span><span class="mp">C ${m.macros.carbs}</span><span class="mp">F ${m.macros.fats}</span><span class="mp">${m.macros.kcal} kcal</span></div>
+    </div>`).join('');
+}
+
+// ═══════════ APPROVAL WORKFLOW ═══════════
+// The Sunday cockpit. AI-drafted items land here; a human reads, edits, approves, sends.
+// Every item carries an athlete link, a delivery route, and lands in the audit log on approval.
+const QUEUE = [];
+let queueFilter = 'all';
+let reviewStatusFilter='pending';
+function apFilter(f, btn){
+  reviewStatusFilter=f;
+  document.querySelectorAll('.afilt').forEach(b=>b.classList.remove('active'));
+  if(btn) btn.classList.add('active');
+  renderReviewQueue();
+}
+function updateApprovalCounts(){ /* legacy demo counters replaced by renderReviewQueue */ }
+const KIND_LABEL = {brief:'Weekly brief', clinical:'Clinical', referral:'Referral'};
+const KIND_CLASS = {brief:'qk-brief', clinical:'qk-clinical', referral:'qk-referral'};
+function renderQueue(){
+  updateApprovalCounts();
+  let items = QUEUE.slice();
+  if(queueFilter==='done') items = items.filter(q=>q.status==='approved');
+  else if(queueFilter==='all') items = items.filter(q=>q.status==='pending');
+  else items = items.filter(q=>q.kind===queueFilter && q.status==='pending');
+  const wrap = document.getElementById('ap-queue');
+  if(!items.length){ wrap.innerHTML = `<div class="card"><div style="font-size:12px;color:var(--muted);padding:6px 0;">Nothing here. ${queueFilter==='done'?'No items approved yet this batch.':'Queue clear — every item in this view has been actioned.'}</div></div>`; return; }
+  wrap.innerHTML = items.map(q=>`
+    <div class="q-card ${q.status==='approved'?'approved':''}" id="${q.id}">
+      <div class="q-head" onclick="toggleQ('${q.id}')">
+        <span class="q-kind ${KIND_CLASS[q.kind]}">${KIND_LABEL[q.kind]}</span>
+        <div class="q-title"><div class="q-name">${q.name}</div><div class="q-meta">${q.meta}</div></div>
+        <div class="q-owner">${q.status==='approved'?'✓ Sent':q.owner}</div>
+        <span class="q-chev">▶</span>
+      </div>
+      <div class="q-body">
+        ${q.status==='approved' ? renderApprovedBody(q) : `
+          <div class="q-draftlabel"><span>AI draft — edit before sending</span><span id="editflag-${q.id}" style="color:var(--amber);display:none;">● edited</span></div>
+          <textarea class="q-edit" id="edit-${q.id}" oninput="markEdited('${q.id}')">${q.draft}</textarea>
+          <div class="q-actions">
+            <button class="btn" onclick="approveItem('${q.id}')">✓ Approve &amp; Send</button>
+            ${q.kind==='brief'||q.kind==='clinical' ? `<button class="btn ghost" onclick="regenItem('${q.id}')">⚡ Regenerate draft</button>` : ''}
+            <button class="btn ghost" onclick="openAthlete('${q.athlete}')">Open ${q.name.split(' ')[0]}'s profile</button>
+            <span class="q-deliver">Delivers to: <strong style="color:var(--mid)">${q.deliver}</strong></span>
+          </div>`}
+      </div>
+    </div>`).join('');
+}
+function renderApprovedBody(q){
+  return `<div class="q-approved-stamp">✓ Approved by <strong>${q.owner}</strong> at ${q.approvedAt}${q.edited?' · edited before sending':' · sent as drafted'} · delivered to ${q.deliver}</div>`;
+}
+function toggleQ(id){
+  const c = document.getElementById(id);
+  const wasOpen = c.classList.contains('open');
+  document.querySelectorAll('.q-card').forEach(x=>x.classList.remove('open'));
+  if(!wasOpen) c.classList.add('open');
+}
+function markEdited(id){
+  const q = QUEUE.find(x=>x.id===id);
+  if(!q) return;
+  q.edited = true;
+  q.draft = document.getElementById('edit-'+id).value;
+  document.getElementById('editflag-'+id).style.display='';
+  document.getElementById('edit-'+id).classList.add('edited');
+}
+function nowStamp(){
+  const d = new Date();
+  return d.toLocaleDateString('en-AU',{day:'numeric',month:'short'})+' '+d.toLocaleTimeString('en-AU',{hour:'numeric',minute:'2-digit'});
+}
+let auditLog = [];
+function approveItem(id){
+  const q = QUEUE.find(x=>x.id===id);
+  if(!q) return;
+  const ta = document.getElementById('edit-'+id);
+  if(ta){ q.draft = ta.value; }
+  q.status = 'approved';
+  q.approvedAt = nowStamp();
+  auditLog.unshift({name:q.name, kind:KIND_LABEL[q.kind], owner:q.owner, at:q.approvedAt, edited:q.edited, deliver:q.deliver});
+  renderQueue();
+  renderAudit();
+}
+function regenItem(id){
+  const q = QUEUE.find(x=>x.id===id);
+  const a = ATHLETES[q.athlete];
+  if(!a || !a.weeklyPrompt){ return; }
+  const ta = document.getElementById('edit-'+id);
+  const btns = document.querySelectorAll('#'+id+' .btn');
+  ta.value = 'Regenerating draft from this week\'s data...';
+  ta.disabled = true;
+  fetch("https://api.anthropic.com/v1/messages",{
+    method:"POST",headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({model:"claude-sonnet-4-6",max_tokens:1500,messages:[{role:"user",content:a.weeklyPrompt}]})
+  }).then(r=>r.json()).then(data=>{
+    ta.value = data.content?.filter(x=>x.type==="text").map(x=>x.text).join("")||"Unable to generate.";
+    ta.disabled = false;
+    q.draft = ta.value; q.edited = false;
+    document.getElementById('editflag-'+id).style.display='none';
+    ta.classList.remove('edited');
+  }).catch(()=>{ ta.value = q.draft; ta.disabled=false; });
+}
+function renderAudit(){
+  const el = document.getElementById('ap-audit');
+  if(!auditLog.length){ el.innerHTML = `<div style="font-size:12px;color:var(--muted);padding:6px 0;">Nothing approved yet. Approved items appear here with approver, timestamp, and whether the draft was edited.</div>`; return; }
+  el.innerHTML = auditLog.map(a=>`
+    <div class="audit-row">
+      <div class="audit-ic">✓</div>
+      <div class="audit-txt"><strong>${a.kind}: ${a.name}</strong> approved by ${a.owner}${a.edited?', edited before sending':', sent as drafted'}. Delivered to ${a.deliver}.</div>
+      <div class="audit-time">${a.at}</div>
+    </div>`).join('');
+}
+// Init: set the approvals badge on load so the queue count is visible before opening the tab
+updateApprovalCounts();
+</script>
+</body>
+</html>
